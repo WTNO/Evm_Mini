@@ -1,3 +1,5 @@
+// 堆栈的最大深度为 1024 项
+// 堆栈中的每个项目是一个 256 位（32 字节）的字。
 class Stack {
     constructor(maxHeight) {
         this._store = [];
@@ -45,8 +47,20 @@ class Stack {
         this._store[this.len - position] = temp;
     }
 
+    // 复制指定栈中元素并将其副本压入栈顶
     dup(position) {
+        const len = this._len;
+        if (len < position) {
+            throw new Error('stack underflow');
+        }
 
+        if (len >= maxHeight) {
+            throw new Error('stack overflow');
+        }
+
+        const i = len - position;
+        this._store.push(this._store[i]);
+        this._len++;
     }
 
     isEmpty() {
@@ -55,5 +69,9 @@ class Stack {
 
     size() {
         return this._len;
+    }
+
+    getStack() {
+        return this._store.slice(0, this._len)
     }
 }
