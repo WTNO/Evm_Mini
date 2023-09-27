@@ -20,6 +20,7 @@ class Memory {
         this._store = new Uint8Array(INIT_SIZE);
     }
 
+    // 扩容
     resize(offset, size) {
         if (size == 0) {
             return;
@@ -33,5 +34,41 @@ class Memory {
             // 扩容数组
             this._store = concatBytes(this._store, new Uint8Array(expandSize));
         }
+    }
+
+    // 将数据写入memory
+    set(offset, size, value) {
+        if (size === 0) {
+            return;
+        }
+
+        if (size !== value.length) {
+            throw new Error('Invalid value size');
+        }
+
+        this.resize(offset, size);
+
+        if (offset + size > this._store.length) {
+            throw new Error('Value exceeds memory capacity');
+        }
+
+        this.set(value, offset)
+    }
+
+    // 返回复制的副本，改动数组的内容不会影响到原数组
+    getCopy(offset, size) {
+        this.resize(offset, size);
+        
+        const result = new Uint8Array(size);
+
+        result.set(this._store.subarray(offset, offset + size));
+
+        return result;
+    }
+
+    // 使用该方法返回的新数组还是建立在原有的 Buffer 之上的，所以，改动数组的内容将会影响到原数组
+    getPtr(offset, size) {
+        this.resize(offset, size);
+        return this._store.subarray(offset, offset + size);
     }
 }
