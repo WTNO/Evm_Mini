@@ -1,3 +1,5 @@
+import { concatBytes } from "./util";
+
 const INIT_SIZE = 8192;
 
 function newSize(value) {
@@ -28,7 +30,8 @@ class Memory {
         const diff = newSize - this._store.length;
         if (diff > 0) {
             const  expandSize = Math.ceil(diff / CONTAINER_SIZE) * CONTAINER_SIZE;
-            // TODO:扩容数组函数
+            // 扩容数组
+            this._store = concatBytes(this._store, new Uint8Array(expandSize));
         }
     }
 }
