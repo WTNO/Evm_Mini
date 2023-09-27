@@ -19,3 +19,29 @@ export function concatBytes (...arrs) {
 
     return newArr;
 }
+
+export function hexToBytes(hexStr) {
+    if (typeof hexStr !== 'string') {
+        throw new Error(`hex argument type ${typeof hexStr} must be of type string`);
+    }
+
+    if (!hexStr.startsWith("0x")) {
+        throw new Error(`prefixed hex input should start with 0x, got ${hexStr.substring(0, 2)}`);
+    }
+
+    // 长度为单数，头部补0
+    if (hexStr.length % 2) {
+        hexStr = "0" + hexStr.substring(2);
+    } else {
+        hexStr = hex.substring(2);
+    }
+
+    const result = new Uint8Array(hexStr.length / 2);
+
+    for (let i = 0; i < hexStr.length / 2; i++) {
+        // 每两位16进制的字符串转坏为一个byte
+        result[i] = parseInt(hexStr.slice(i * 2, (i + 1) * 2), 16);
+    }
+    
+    return result;
+}
