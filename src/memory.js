@@ -15,7 +15,7 @@ function newSize(value) {
 const CONTAINER_SIZE = 8192
 
 // 内存地址是以字节为单位，因此使用Uint8Array存储
-class Memory {
+export class Memory {
     constructor() {
         this._store = new Uint8Array(INIT_SIZE);
     }

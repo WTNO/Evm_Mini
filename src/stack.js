@@ -1,6 +1,6 @@
 // 堆栈的最大深度为 1024 项
 // 堆栈中的每个项目是一个 256 位（32 字节）的字。
-class Stack {
+export class Stack {
     constructor(maxHeight) {
         this._store = [];
         this._len = 0;
