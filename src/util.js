@@ -33,7 +33,7 @@ export function hexToBytes(hexStr) {
     if (hexStr.length % 2) {
         hexStr = "0" + hexStr.substring(2);
     } else {
-        hexStr = hex.substring(2);
+        hexStr = hexStr.substring(2);
     }
 
     const result = new Uint8Array(hexStr.length / 2);
