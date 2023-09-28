@@ -129,4 +129,27 @@ export const opcodes = {
     0xf3: 'RETURN',
     0xfe: 'INVALID',
     0xff: 'SELFDESTRUCT',
+
+    // 硬分叉操作码
+    0xf4: 'DELEGATECALL', // EIP-7
+    0x54: 'SLOAD',
+    0xf1: 'CALL',
+    0xf2: 'CALLCODE',
+    0x3b: 'EXTCODESIZE',
+    0x3c: 'EXTCODECOPY',
+    0xf4: 'DELEGATECALL', // EIP-7
+    0xff: 'SELFDESTRUCT',
+    0x31: 'BALANCE',
+    0xfd: 'REVERT', // EIP-140
+    0xfa: 'STATICCALL', // EIP-214
+    0x3d: 'RETURNDATASIZE', // EIP-211
+    0x3e: 'RETURNDATACOPY', // EIP-211
+    0x1b: 'SHL', // EIP-145
+    0x1c: 'SHR', // EIP-145
+    0x1d: 'SAR', // EIP-145
+    0x3f: 'EXTCODEHASH', // EIP-1052
+    0xf5: 'CREATE2', // EIP-1014
+    0x46: 'CHAINID', // EIP-1344
+    0x47: 'SELFBALANCE', // EIP-1884
+    0x44: 'PREVRANDAO', // EIP-4399
 }
