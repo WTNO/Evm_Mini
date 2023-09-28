@@ -1,4 +1,4 @@
-export function concatBytes (...arrs) {
+export function concatBytes(...arrs) {
     if (arrs.length == 1) return arrs[0];
 
     // 计算传入数组总长度
@@ -12,7 +12,7 @@ export function concatBytes (...arrs) {
     const newArr = new Uint8Array(length);
 
     let offset = 0;
-    arrs.forEach(function(arr, index) {
+    arrs.forEach(function (arr, index) {
         newArr.set(arr, offset);
         offset += arr.length;
     });
@@ -42,6 +42,17 @@ export function hexToBytes(hexStr) {
         // 每两位16进制的字符串转坏为一个byte
         result[i] = parseInt(hexStr.slice(i * 2, (i + 1) * 2), 16);
     }
-    
+
     return result;
+}
+
+const hexByByte = Array.from({ length: 256 }, (v, i) => i.toString(16).padStart(2, '0'))
+
+export function bytesToHex(bytes) {
+    let hex = '0x'
+    if (bytes === undefined || bytes.length === 0) return hex
+    for (const byte of bytes) {
+        hex += hexByByte[byte]
+    }
+    return hex
 }
