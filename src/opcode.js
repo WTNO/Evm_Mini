@@ -22,7 +22,7 @@ export const opcodes = {
     0x18: 'XOR',
     0x19: 'NOT',
     0x1a: 'BYTE',
-    0x20: 'KECCAK256',
+    0x20: 'KECCAK256', // SHA3
     0x30: 'ADDRESS',
     0x31: 'BALANCE',
     0x32: 'ORIGIN',
