@@ -1,7 +1,8 @@
 import { hexToBytes, bytesToHex } from "./bytes.js";
 import { opcodes } from "./opcode.js";
+import { mod } from "./utils.js";
 
-outputOpCode()
+// outputOpCode()
 
 // 首先尝试输出操作码
 export function outputOpCode() {
@@ -44,8 +45,14 @@ function pad(num, size) {
 
 function log(num, base) {
     return Math.log(num) / Math.log(base)
-  }
-  
-  function roundLog(num, base) {
+}
+
+function roundLog(num, base) {
     return Math.ceil(log(num, base))
-  }
+}
+
+function test() {
+    console.log(mod(100, 0));
+}
+
+test();
