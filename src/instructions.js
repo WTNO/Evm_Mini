@@ -176,11 +176,93 @@ export const opCodeFunctionMap = new Map([
     ],
     // GT
     [
-        0x10,
+        0x11,
         function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(a > b ? BIGINT_1 : BIGINT_0);
+        }
+    ],
+    // SLT 所有值都被视为二进制补码有符号的256位整数。
+    [
+        0x12,
+        function(context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            context.stack.push(BigInt.asIntN(a) < BigInt.asIntN(b) ? BIGINT_1 : BIGINT_0);
+        }
+    ],
+    // SGT 所有值都被视为二进制补码有符号的256位整数。
+    [
+        0x13,
+        function(context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            context.stack.push(BigInt.asIntN(a) > BigInt.asIntN(b) ? BIGINT_1 : BIGINT_0);
+        }
+    ],
+    // EQ
+    [
+        0x14,
+        function(context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            context.stack.push(a === b ? BIGINT_1 : BIGINT_0);
+        }
+    ],
+    // ISZERO
+    [
+        0x15,
+        function(context) {
+            const a = context.stack.pop();
+            context.stack.push(a === BIGINT_0 ? BIGINT_1 : BIGINT_0);
+        }
+    ],
+    // AND
+    [
+        0x16,
+        function(context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            context.stack.push(a & b);
+        }
+    ],
+    // OR
+    [
+        0x17,
+        function(context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            context.stack.push(a | b);
+        }
+    ],
+    // XOR
+    [
+        0x18,
+        function(context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            context.stack.push(a ^ b);
+        }
+    ],
+    // NOT
+    [
+        0x19,
+        function(context) {
+            const a = context.stack.pop();
+            context.stack.push(BigInt.asUintN(256, ~a));
+        }
+    ],
+    // BYTE
+    // 将位置n的字节值设定为z，将'z'视为大端序的32字节整数。
+    // 如果'n' > 32，f设定为0。
+    // 示例：f = '5'，n=31 => 5。(没看懂)
+    [
+        0x1a,
+        function(context) {
+            const i = context.stack.pop();
+            const x = context.stack.pop();
+            
         }
     ],
 ])
