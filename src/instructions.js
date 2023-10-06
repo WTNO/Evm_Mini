@@ -1,4 +1,4 @@
-import { BIGINT_0, BIGINT_1, TWO_POW256 } from "./constants";
+import { BIGINT_0, BIGINT_1, BIGINT_7, BIGINT_8, TWO_POW256 } from "./constants";
 import { mod } from "./utils";
 
 // 指令集
@@ -131,16 +131,56 @@ export const opCodeFunctionMap = new Map([
             const base = context.stack.pop();
             const exponent = context.stack.pop();
             if (exponent === BIGINT_0) {
-                runState.stack.push(BIGINT_1)
-                return
+                context.stack.push(BIGINT_1);
+                return;
             }
 
             if (base === BIGINT_0) {
-                runState.stack.push(base)
-                return
+                context.stack.push(base);
+                return;
             }
 
             const result = (base ** exponent) % BIGINT_2EXP256;
+            context.stack.push(result);
+        }
+    ],
+    // SIGNEXTEND扩展了二进制补码有符号整数的长度，如果byteNum>31，则将z设置为x；
+    // 如果x被解释为在(byteNum*8+7)处有符号位的有符号数，扩展到完整的256位，则将z设置为x，并返回z。
+    // (没看太懂)
+    [
+        0x0b,
+        function (context) {
+            const b = context.stack.pop();
+            const x = context.stack.pop();
+
+            if (b < BIGINT_31) {
+                const signBit = b * BIGINT_8 + BIGINT_7
+                const mask = (BIGINT_1 << signBit) - BIGINT_1
+                if ((x >> signBit) & BIGINT_1) {
+                    x = x | BigInt.asUintN(256, ~mask)
+                } else {
+                    x = x & mask
+                }
+            }
+            context.stack.push(x)
+        }
+    ],
+    // LT
+    [
+        0x10,
+        function (context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            context.stack.push(a < b ? BIGINT_1 : BIGINT_0);
+        }
+    ],
+    // GT
+    [
+        0x10,
+        function (context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            context.stack.push(a > b ? BIGINT_1 : BIGINT_0);
         }
     ],
 ])

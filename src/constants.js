@@ -1,5 +1,12 @@
 export const BIGINT_0 = BigInt(0)
 export const BIGINT_1 = BigInt(1)
+export const BIGINT_2 = BigInt(2)
+export const BIGINT_3 = BigInt(3)
+export const BIGINT_7 = BigInt(7)
+export const BIGINT_8 = BigInt(8)
+
+export const BIGINT_31 = BigInt(31)
+
 
 export const TWO_POW256 = BigInt(
     '0x10000000000000000000000000000000000000000000000000000000000000000'
