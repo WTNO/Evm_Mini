@@ -1,4 +1,4 @@
-import { hexToBytes, bytesToHex } from "./util.js";
+import { hexToBytes, bytesToHex } from "./bytes.js";
 import { opcodes } from "./opcode.js";
 
 outputOpCode()

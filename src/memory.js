@@ -1,4 +1,4 @@
-import { concatBytes } from "./util.js";
+import { concatBytes } from "./bytes.js";
 
 const INIT_SIZE = 8192;
 
