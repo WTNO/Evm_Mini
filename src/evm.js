@@ -1,4 +1,5 @@
 import { hexToBytes, bytesToHex } from "./bytes.js";
+import { BIGINT_2EXP256 } from "./constants.js";
 import { opcodes } from "./opcode.js";
 import { mod } from "./utils.js";
 
@@ -52,7 +53,13 @@ function roundLog(num, base) {
 }
 
 function test() {
-    console.log(mod(100, 0));
+    console.log(2n ** 96n);
+    console.log(2n ** 160n);
+    console.log(2n ** 224n);
+    console.log(2n ** 256n);
+
+    const result = (2n ** 224n) % BIGINT_2EXP256;
+    console.log(result);
 }
 
 test();

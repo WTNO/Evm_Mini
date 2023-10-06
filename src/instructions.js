@@ -1,4 +1,4 @@
-import { BIGINT_0, TWO_POW256 } from "./constants";
+import { BIGINT_0, BIGINT_1, TWO_POW256 } from "./constants";
 import { mod } from "./utils";
 
 // 指令集
@@ -7,14 +7,14 @@ export const opCodeFunctionMap = new Map([
     // STOP
     [
         0x00,
-        function() {
+        function () {
             throw new Error('STOP INSTRUCTION');
         }
     ],
     // ADD
     [
         0x01,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(mod(a + b, TWO_POW256));
@@ -23,7 +23,7 @@ export const opCodeFunctionMap = new Map([
     // MUL
     [
         0x02,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(mod(a * b, TWO_POW256));
@@ -32,7 +32,7 @@ export const opCodeFunctionMap = new Map([
     // SUB
     [
         0x03,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(mod(a - b, TWO_POW256));
@@ -41,7 +41,7 @@ export const opCodeFunctionMap = new Map([
     // DIV 整数除法运算
     [
         0x04,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             if (b === BIGINT_0) {
@@ -54,7 +54,7 @@ export const opCodeFunctionMap = new Map([
     // SDIV 将a和b解释为二进制补码有符号整数，对两个操作数进行有符号除法，并将结果设置为r。如果b == 0，那么r被设置为0。
     [
         0x05,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             if (b === BIGINT_0) {
@@ -72,7 +72,7 @@ export const opCodeFunctionMap = new Map([
     // MOD
     [
         0x06,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             if (b === BIGINT_0) {
@@ -80,6 +80,67 @@ export const opCodeFunctionMap = new Map([
             } else {
                 context.stack.push(mod(a, b));
             }
+        }
+    ],
+    // SMOD SMod将a和b解释为二进制补码有符号整数，将结果设置为（a的符号）* { abs(a) mod abs(b) }。
+    // 如果b == 0，那么结果被设置为0（注意：这与big.Int有所不同）。
+    [
+        0x07,
+        function (context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            if (b === BIGINT_0) {
+                context.stack.push(BIGINT_0);
+            } else {
+                context.stack.push(BigInt.asIntN(256, -100n) % BigInt.asIntN(256, 3n));
+            }
+        }
+    ],
+    // ADDMOD (a + b) % N：加法后跟模运算的整数结果。如果分母是0，结果将为0。
+    [
+        0x08,
+        function (context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            const n = context.stack.pop();
+            if (n === BIGINT_0) {
+                context.stack.push(BIGINT_0);
+            } else {
+                context.stack.push(mod(a + b, n));
+            }
+        }
+    ],
+    // MULMOD (a * b) % N：乘法后跟模运算的整数结果。如果分母是0，结果将为0。
+    [
+        0x09,
+        function (context) {
+            const a = context.stack.pop();
+            const b = context.stack.pop();
+            const n = context.stack.pop();
+            if (n === BIGINT_0) {
+                context.stack.push(BIGINT_0);
+            } else {
+                context.stack.push(mod(a * b, n));
+            }
+        }
+    ],
+    // EXP z = base**exponent mod 2**256, and returns z.
+    [
+        0x0a,
+        function (context) {
+            const base = context.stack.pop();
+            const exponent = context.stack.pop();
+            if (exponent === BIGINT_0) {
+                runState.stack.push(BIGINT_1)
+                return
+            }
+
+            if (base === BIGINT_0) {
+                runState.stack.push(base)
+                return
+            }
+
+            const result = (base ** exponent) % BIGINT_2EXP256;
         }
     ],
 ])
