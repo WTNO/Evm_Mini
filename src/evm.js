@@ -1,8 +1,7 @@
 import { hexToBytes, bytesToHex } from "./bytes.js";
 import { BIGINT_2EXP256 } from "./constants.js";
 import { opcodes } from "./opcode.js";
-import { mod } from "./utils.js";
-import { keccak256 } from "https://raw.githubusercontent.com/ethereum/js-ethereum-cryptography/master/src/keccak.ts";
+import { keccak256 } from 'ethereum-cryptography/keccak.js'
 
 
 // outputOpCode()

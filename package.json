@@ -1,0 +1,22 @@
+{
+  "name": "evm_mini",
+  "version": "1.0.0",
+  "description": "尝试使用JavaScript实现一个简易的EVM",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WTNO/Evm_Mini.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WTNO/Evm_Mini/issues"
+  },
+  "homepage": "https://github.com/WTNO/Evm_Mini#readme",
+  "dependencies": {
+    "ethereum-cryptography": "^2.1.2"
+  }
+}
