@@ -1,4 +1,4 @@
-import { BIGINT_0, BIGINT_1, BIGINT_7, BIGINT_8, TWO_POW256 } from "./constants";
+import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants";
 import { mod } from "./utils";
 
 // 指令集
@@ -186,7 +186,7 @@ export const opCodeFunctionMap = new Map([
     // SLT 所有值都被视为二进制补码有符号的256位整数。
     [
         0x12,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(BigInt.asIntN(a) < BigInt.asIntN(b) ? BIGINT_1 : BIGINT_0);
@@ -195,7 +195,7 @@ export const opCodeFunctionMap = new Map([
     // SGT 所有值都被视为二进制补码有符号的256位整数。
     [
         0x13,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(BigInt.asIntN(a) > BigInt.asIntN(b) ? BIGINT_1 : BIGINT_0);
@@ -204,7 +204,7 @@ export const opCodeFunctionMap = new Map([
     // EQ
     [
         0x14,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(a === b ? BIGINT_1 : BIGINT_0);
@@ -213,7 +213,7 @@ export const opCodeFunctionMap = new Map([
     // ISZERO
     [
         0x15,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             context.stack.push(a === BIGINT_0 ? BIGINT_1 : BIGINT_0);
         }
@@ -221,7 +221,7 @@ export const opCodeFunctionMap = new Map([
     // AND
     [
         0x16,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(a & b);
@@ -230,7 +230,7 @@ export const opCodeFunctionMap = new Map([
     // OR
     [
         0x17,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(a | b);
@@ -239,7 +239,7 @@ export const opCodeFunctionMap = new Map([
     // XOR
     [
         0x18,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
             context.stack.push(a ^ b);
@@ -248,7 +248,7 @@ export const opCodeFunctionMap = new Map([
     // NOT
     [
         0x19,
-        function(context) {
+        function (context) {
             const a = context.stack.pop();
             context.stack.push(BigInt.asUintN(256, ~a));
         }
@@ -259,10 +259,36 @@ export const opCodeFunctionMap = new Map([
     // 示例：f = '5'，n=31 => 5。(没看懂)
     [
         0x1a,
-        function(context) {
+        function (context) {
             const i = context.stack.pop();
             const x = context.stack.pop();
-            
+
+            if (i > BIGINT_32) {
+                context.stack.push(BIGINT_0);
+                return
+            }
+
+            const r = (x >> ((BIGINT_31 - i) * BIGINT_8)) & BIGINT_255;
+            context.stack.push(r);
+        }
+    ],
+    // SHL 将比特位向最重要的一位移动。移动后的256位之后的比特位将被丢弃，新的比特位将设为0。
+    // shift：向左移动的位数。
+    // value：需要移动的32字节。
+    // value << shift：移位后的值。如果shift大于255，返回0。(TODO:这里怎么感觉应该是大于255？)
+    [
+        0x1b,
+        function (context) {
+            const shift = context.stack.pop();
+            const value = context.stack.pop();
+
+            if (shift > BIGINT_255) {
+                context.stack.push(BIGINT_0);
+                return;
+            }
+
+            const r = (value << shift) & MAX_INTEGER_BIGINT;
+            context.stack.push(r);
         }
     ],
 ])
