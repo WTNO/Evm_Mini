@@ -2,6 +2,8 @@ import { hexToBytes, bytesToHex } from "./bytes.js";
 import { BIGINT_2EXP256 } from "./constants.js";
 import { opcodes } from "./opcode.js";
 import { mod } from "./utils.js";
+import { keccak256 } from "https://raw.githubusercontent.com/ethereum/js-ethereum-cryptography/master/src/keccak.ts";
+
 
 // outputOpCode()
 
@@ -53,13 +55,9 @@ function roundLog(num, base) {
 }
 
 function test() {
-    console.log(2n ** 96n);
-    console.log(2n ** 160n);
-    console.log(2n ** 224n);
-    console.log(2n ** 256n);
-
-    const result = (2n ** 224n) % BIGINT_2EXP256;
-    console.log(result);
+    const data = new Uint8Array([8, 11, 31, 254, 22, 33]);
+    const r = BigInt(bytesToHex(keccak256(data)));
+    console.log(r)
 }
 
 test();

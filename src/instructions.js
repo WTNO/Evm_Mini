@@ -1,5 +1,7 @@
+import { bytesToHex } from "./bytes";
 import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants";
 import { mod } from "./utils";
+import { keccak256 } from "https://raw.githubusercontent.com/ethereum/js-ethereum-cryptography/master/src/keccak.ts";
 
 // 指令集
 
@@ -350,11 +352,26 @@ export const opCodeFunctionMap = new Map([
                 const a = BIGINT_255 - shift;
                 // 最大值先右移a位再左移a位，结果就是从最高有效位开始shift位都是1
                 const b = (MAX_INTEGER_BIGINT >> a) << a;
+                // 补1
                 r = b | tempValue;
             } else {
                 r = tempValue;
             }
 
+            context.stack.push(r);
+        }
+    ],
+    // SHA3 计算给定内存中数据的Keccak-256哈希值
+    [
+        0x20,
+        function (context) {
+            const offset = context.stack.pop();
+            const size = context.stack.pop();
+
+            if (size !== BIGINT_0) {
+                data = context.memory.read(Number(offset), Number(size));
+            }
+            const r = BigInt(bytesToHex(keccak256(data)));
             context.stack.push(r);
         }
     ],
