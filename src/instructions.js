@@ -272,7 +272,8 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(r);
         }
     ],
-    // SHL 将比特位向最重要的一位移动。移动后的256位之后的比特位将被丢弃，新的比特位将设为0。
+    // SHL 逻辑左移
+    // 将比特位向最高有效位移动。移动后的256位之后的比特位将被丢弃，新的比特位将设为0。
     // shift：向左移动的位数。
     // value：需要移动的32字节。
     // value << shift：移位后的值。如果shift大于255，返回0。(TODO:这里怎么感觉应该是大于255？)
@@ -289,6 +290,40 @@ export const opCodeFunctionMap = new Map([
 
             const r = (value << shift) & MAX_INTEGER_BIGINT;
             context.stack.push(r);
+        }
+    ],
+    // SHR 逻辑右移
+    // 将比特位向最低有效位移动。移动前的第一位之前的比特位将被丢弃，新的比特位将设为0。
+    // shift：向右移动的位数。
+    // value：需要移动的32字节。
+    // value >> shift：移位后的值。如果shift大于255，返回0。
+    [
+        0x1c,
+        function(context) {
+            const shift = context.stack.pop();
+            const value = context.stack.pop();
+
+            if (shift > BIGINT_255) {
+                context.stack.push(BIGINT_0);
+                return;
+            }
+
+            const r = value >> shift
+            context.stack.push(r);
+        }
+    ],
+    // SAR 算数右移（带符号右移）
+    // 将比特位向最低有效位移动。在第一个之前移动的比特位将被丢弃，如果之前的最高有效位是0，则新的比特位设为0，否则新的比特位设为1。
+    // shift：向右移动的位数。
+    // value：需要移动的整数。
+    // value >> shift：移位后的值。
+    [
+        0x1d,
+        function(context) {
+            const shift = context.stack.pop();
+            const value = context.stack.pop();
+
+           
         }
     ],
 ])
