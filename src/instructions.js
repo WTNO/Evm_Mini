@@ -299,7 +299,7 @@ export const opCodeFunctionMap = new Map([
     // value >> shift：移位后的值。如果shift大于255，返回0。
     [
         0x1c,
-        function(context) {
+        function (context) {
             const shift = context.stack.pop();
             const value = context.stack.pop();
 
@@ -319,11 +319,43 @@ export const opCodeFunctionMap = new Map([
     // value >> shift：移位后的值。
     [
         0x1d,
-        function(context) {
+        function (context) {
             const shift = context.stack.pop();
             const value = context.stack.pop();
 
-           
+            // 转化为带符号树
+            const signedValue = BigInt.asIntN(256, value);
+            // 判定正负
+            const isSigned = signedValue < 0;
+
+            let r;
+            if (shift > 256) {
+                if (isSigned) {
+                    // 负数首尾为0，右移后补1，所以右移位数大于256时，结果为最大值
+                    r = MAX_INTEGER_BIGINT;
+                } else {
+                    // 正数首尾为0，右移后补0，所以右移位数大于256时，结果为0
+                    r = BIGINT_0;
+                }
+                context.stack.push(r);
+            }
+
+            // 右移位数小于等于256时
+            // 默认补0
+            const tempValue = value >> shift;
+
+            // 但是负数要将最高有效位开始的shift位补1
+            if (isSigned) {
+                // 255是去掉了符号位？
+                const a = BIGINT_255 - shift;
+                // 最大值先右移a位再左移a位，结果就是从最高有效位开始shift位都是1
+                const b = (MAX_INTEGER_BIGINT >> a) << a;
+                r = b | tempValue;
+            } else {
+                r = tempValue;
+            }
+
+            context.stack.push(r);
         }
     ],
 ])
