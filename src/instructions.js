@@ -1,4 +1,4 @@
-import { bytesToHex } from "./bytes";
+import { bigintToBytes, bytesToBigInt, bytesToHex } from "./bytes";
 import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants";
 import { mod } from "./utils";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
@@ -566,11 +566,42 @@ export const opCodeFunctionMap = new Map([
             
         }
     ],
-    // POP
+    // POP 从堆栈中移除项目
     [
         0x50,
         function (context) {
-            
+            context.stack.pop();
+        }
+    ],
+    // MLOAD 从内存中加载word
+    // 堆栈输入
+    // offset：内存中的字节偏移量。
+    // 堆栈输出
+    // value：从该偏移量开始的内存中的32个字节。如果超出其当前大小（参见MSIZE），则写入0。
+    [
+        0x51,
+        function (context) {
+            const offset = context.stack.pop();
+
+            const word = context.memory.getPtr(Number(offset), 32);
+
+            context.stack.push(bytesToBigInt(word))
+        }
+    ],
+    // MSTORE 将word保存到内存
+    // 堆栈输入
+    // offset：内存中的字节偏移量。
+    // value：要写入内存的32字节值。
+    [
+        0x52,
+        function (context) {
+            const offset = context.stack.pop();
+            const value = context.stack.pop();
+
+            // bigint 转 Uint8Array
+            const data = bigintToBytes(value);
+
+            context.memory.set(Number(offset), 32, data)
         }
     ],
     

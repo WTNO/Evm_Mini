@@ -1,3 +1,5 @@
+import { BIGINT_0 } from "./constants";
+
 export function concatBytes(...arrs) {
     if (arrs.length == 1) return arrs[0];
 
@@ -20,6 +22,7 @@ export function concatBytes(...arrs) {
     return newArr;
 }
 
+// 16进制字符串 转 Uint8Array
 export function hexToBytes(hexStr) {
     if (typeof hexStr !== 'string') {
         throw new Error(`hex argument type ${typeof hexStr} must be of type string`);
@@ -48,6 +51,7 @@ export function hexToBytes(hexStr) {
 
 const hexByByte = Array.from({ length: 256 }, (v, i) => i.toString(16).padStart(2, '0'))
 
+// Uint8Array 转 16进制字符串
 export function bytesToHex(bytes) {
     let hex = '0x'
     if (bytes === undefined || bytes.length === 0) return hex
@@ -55,4 +59,25 @@ export function bytesToHex(bytes) {
         hex += hexByByte[byte]
     }
     return hex
+}
+
+// Uint8Array 转 BigInt 
+// bytes[0]是最大端，bytes[bytes.length - 1]是最小端
+export function bytesToBigInt(bytes) {
+    if (typeof bytes !== 'Uint8Array') {
+        throw new Error('Input type is not Uint8Array');
+    }
+    const hex = bytesToHex(bytes);
+    if (hex === '0x') {
+        return BIGINT_0;
+    }
+
+    return BigInt(hex);
+}
+
+// BigInt 转 Uint8Array
+export function bigintToBytes(data) {
+    if (typeof data !== 'BigInt') {
+        throw new Error('Input type is not BigInt');
+    }
 }
