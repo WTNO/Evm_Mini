@@ -53,7 +53,7 @@ function roundLog(num, base) {
 }
 
 function test() {
-    const data = new Uint8Array([8, 11, 31, 254, 22, 33]);
+    const data = new Uint8Array([1, 11, 31, 254, 22, 33]);
     const r = BigInt(bytesToHex(keccak256(data)));
     console.log(r)
 }

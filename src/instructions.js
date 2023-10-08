@@ -1,7 +1,8 @@
 import { bytesToHex } from "./bytes";
 import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants";
 import { mod } from "./utils";
-import { keccak256 } from "https://raw.githubusercontent.com/ethereum/js-ethereum-cryptography/master/src/keccak.ts";
+import { keccak256 } from 'ethereum-cryptography/keccak.js'
+
 
 // 指令集
 
@@ -375,4 +376,202 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(r);
         }
     ],
+    // 0x30 - 0x4a 部分涉及解释器interpreter和区块部分内容
+    // ADDRESS
+    [
+        0x30,
+        function (context) {
+            
+        }
+    ],
+    // BALANCE
+    [
+        0x31,
+        function (context) {
+            
+        }
+    ],
+    // ORIGIN
+    [
+        0x32,
+        function (context) {
+            
+        }
+    ],
+    // CALLER
+    [
+        0x33,
+        function (context) {
+            
+        }
+    ],
+    // CALLVALUE
+    [
+        0x34,
+        function (context) {
+            
+        }
+    ],
+    // CALLDATALOAD
+    [
+        0x35,
+        function (context) {
+            
+        }
+    ],
+    // CALLDATASIZE
+    [
+        0x36,
+        function (context) {
+            
+        }
+    ],
+    // CALLDATACOPY
+    [
+        0x37,
+        function (context) {
+            
+        }
+    ],
+    // CODESIZE
+    [
+        0x38,
+        function (context) {
+            
+        }
+    ],
+    // CODECOPY
+    [
+        0x39,
+        function (context) {
+            
+        }
+    ],
+    // GASPRICE
+    [
+        0x3a,
+        function (context) {
+            
+        }
+    ],
+    // EXTCODESIZE
+    [
+        0x3b,
+        function (context) {
+            
+        }
+    ],
+    // EXTCODECOPY
+    [
+        0x3c,
+        function (context) {
+            
+        }
+    ],
+    // RETURNDATASIZE
+    [
+        0x3d,
+        function (context) {
+            
+        }
+    ],
+    // RETURNDATACOPY
+    [
+        0x3e,
+        function (context) {
+            
+        }
+    ],
+    // EXTCODEHASH
+    [
+        0x3f,
+        function (context) {
+            
+        }
+    ],
+    // BLOCKHASH
+    [
+        0x40,
+        function (context) {
+            
+        }
+    ],
+    // COINBASE
+    [
+        0x41,
+        function (context) {
+            
+        }
+    ],
+    // TIMESTAMP
+    [
+        0x42,
+        function (context) {
+            
+        }
+    ],
+    // NUMBER
+    [
+        0x43,
+        function (context) {
+            
+        }
+    ],
+    // DIFFICULTY
+    [
+        0x44,
+        function (context) {
+            
+        }
+    ],
+    // GASLIMIT
+    [
+        0x45,
+        function (context) {
+            
+        }
+    ],
+    // CHAINID
+    [
+        0x46,
+        function (context) {
+            
+        }
+    ],
+    // SELFBALANCE
+    [
+        0x47,
+        function (context) {
+            
+        }
+    ],
+    // BASEFEE
+    [
+        0x48,
+        function (context) {
+            
+        }
+    ],
+    // BLOBHASH
+    [
+        0x49,
+        function (context) {
+            
+        }
+    ],
+    // BLOBBASEFEE
+    [
+        0x4a,
+        function (context) {
+            
+        }
+    ],
+    // POP
+    [
+        0x50,
+        function (context) {
+            
+        }
+    ],
+    
 ])
