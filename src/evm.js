@@ -1,5 +1,4 @@
 import { hexToBytes, bytesToHex } from "./bytes.js";
-import { BIGINT_2EXP256 } from "./constants.js";
 import { opcodes } from "./opcode.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 
