@@ -604,5 +604,21 @@ export const opCodeFunctionMap = new Map([
             context.memory.set(Number(offset), 32, data)
         }
     ],
+    // MSTORE8 将byte保存到内存
+    // 堆栈输入
+    // offset：内存中的偏移量，以字节为单位。
+    // value：写入内存的1字节值（只写入32字节堆栈值的最低有效字节）。
+    [
+        0x52,
+        function (context) {
+            const offset = context.stack.pop();
+            const value = context.stack.pop();
+
+            // bigint 转 Uint8Array
+            const data = bigintToBytes(value) & BIGINT_255;
+
+            context.memory.set(Number(offset), 1, data)
+        }
+    ],
     
 ])

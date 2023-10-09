@@ -42,17 +42,17 @@ export class Memory {
             return;
         }
 
+        this.resize(offset, size);
+
         if (size !== value.length) {
             throw new Error('Invalid value size');
         }
-
-        this.resize(offset, size);
 
         if (offset + size > this._store.length) {
             throw new Error('Value exceeds memory capacity');
         }
 
-        this.set(value, offset)
+        this._store.set(value, offset)
     }
 
     // 返回复制的副本，改动数组的内容不会影响到原数组
