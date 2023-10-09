@@ -381,189 +381,189 @@ export const opCodeFunctionMap = new Map([
     [
         0x30,
         function (context) {
-            
+
         }
     ],
     // BALANCE
     [
         0x31,
         function (context) {
-            
+
         }
     ],
     // ORIGIN
     [
         0x32,
         function (context) {
-            
+
         }
     ],
     // CALLER
     [
         0x33,
         function (context) {
-            
+
         }
     ],
     // CALLVALUE
     [
         0x34,
         function (context) {
-            
+
         }
     ],
     // CALLDATALOAD
     [
         0x35,
         function (context) {
-            
+
         }
     ],
     // CALLDATASIZE
     [
         0x36,
         function (context) {
-            
+
         }
     ],
     // CALLDATACOPY
     [
         0x37,
         function (context) {
-            
+
         }
     ],
     // CODESIZE
     [
         0x38,
         function (context) {
-            
+
         }
     ],
     // CODECOPY
     [
         0x39,
         function (context) {
-            
+
         }
     ],
     // GASPRICE
     [
         0x3a,
         function (context) {
-            
+
         }
     ],
     // EXTCODESIZE
     [
         0x3b,
         function (context) {
-            
+
         }
     ],
     // EXTCODECOPY
     [
         0x3c,
         function (context) {
-            
+
         }
     ],
     // RETURNDATASIZE
     [
         0x3d,
         function (context) {
-            
+
         }
     ],
     // RETURNDATACOPY
     [
         0x3e,
         function (context) {
-            
+
         }
     ],
     // EXTCODEHASH
     [
         0x3f,
         function (context) {
-            
+
         }
     ],
     // BLOCKHASH
     [
         0x40,
         function (context) {
-            
+
         }
     ],
     // COINBASE
     [
         0x41,
         function (context) {
-            
+
         }
     ],
     // TIMESTAMP
     [
         0x42,
         function (context) {
-            
+
         }
     ],
     // NUMBER
     [
         0x43,
         function (context) {
-            
+
         }
     ],
     // DIFFICULTY
     [
         0x44,
         function (context) {
-            
+
         }
     ],
     // GASLIMIT
     [
         0x45,
         function (context) {
-            
+
         }
     ],
     // CHAINID
     [
         0x46,
         function (context) {
-            
+
         }
     ],
     // SELFBALANCE
     [
         0x47,
         function (context) {
-            
+
         }
     ],
     // BASEFEE
     [
         0x48,
         function (context) {
-            
+
         }
     ],
     // BLOBHASH
     [
         0x49,
         function (context) {
-            
+
         }
     ],
     // BLOBBASEFEE
     [
         0x4a,
         function (context) {
-            
+
         }
     ],
     // POP 从堆栈中移除项目
@@ -629,28 +629,28 @@ export const opCodeFunctionMap = new Map([
     [
         0x54,
         function (context) {
-            
+
         }
     ],
     // SSTORE
     [
         0x55,
         function (context) {
-            
+
         }
     ],
     // JUMP
     [
         0x56,
         function (context) {
-            
+
         }
     ],
     // JUMPI
     [
         0x57,
         function (context) {
-            
+
         }
     ],
     // PC
@@ -668,21 +668,21 @@ export const opCodeFunctionMap = new Map([
     [
         0x59,
         function (context) {
-            
+
         }
     ],
     // GAS
     [
         0x5a,
         function (context) {
-            
+
         }
     ],
     // JUMPDEST 标记一个有效的跳转目标
     // 标记一个对于 JUMP 或 JUMPI 的有效跳转目标。此操作在执行过程中对机器状态没有影响。
     [
         0x5b,
-        function () {}
+        function () { }
     ],
     // PUSH0 将值0放在堆栈上
     // 新的值被放在堆栈的顶部，增加所有其他值的索引。
@@ -721,5 +721,38 @@ export const opCodeFunctionMap = new Map([
             }
         }
     ],
-    
+    // DUP1 - DUP16 复制第N个堆栈项
+    // 0x80 - 0x8f
+    [
+        0x80,
+        function (context) {
+            const position = context.opCode - 0x7f;
+            runState.stack.dup(position);
+        }
+    ],
+    // SWAP1 - SWAP16
+    // 0x90 - 0x9f
+    // 交换第一个和第 N+1 个堆栈项
+    [
+        0x90,
+        function (context) {
+            const position = runState.opCode - 0x8f;
+            context.stack.swap(position);
+        }
+    ],
+    // LOG0 - LOG4
+    // 添加带有 0/1/2/3/4 个主题的日志记录
+    // 此指令对EVM状态没有影响。见此处。
+    // 堆栈输入：
+    // offset：内存中的字节偏移量，以字节为单位。
+    // size：要复制的字节大小。
+    // 主题1：32字节的值。
+    // ...
+    // 主题4：32字节的值。
+    [
+        0xa0,
+        function (context) {
+            
+        }
+    ],
 ])
