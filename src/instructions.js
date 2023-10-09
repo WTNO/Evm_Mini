@@ -609,15 +609,88 @@ export const opCodeFunctionMap = new Map([
     // offset：内存中的偏移量，以字节为单位。
     // value：写入内存的1字节值（只写入32字节堆栈值的最低有效字节）。
     [
-        0x52,
+        0x53,
         function (context) {
             const offset = context.stack.pop();
             const value = context.stack.pop();
 
             // bigint 转 Uint8Array
+            // BIGINT_255 也就是 0x00..00ffffffff
             const data = bigintToBytes(value) & BIGINT_255;
 
             context.memory.set(Number(offset), 1, data)
+        }
+    ],
+    // SLOAD 从存储中加载word
+    // 堆栈输入
+    // key：存储中的32字节密钥。
+    // 堆栈输出
+    // value：与该键对应的32字节值。如果之前从未写过该键，则为0。
+    [
+        0x54,
+        function (context) {
+            
+        }
+    ],
+    // SSTORE
+    [
+        0x55,
+        function (context) {
+            
+        }
+    ],
+    // JUMP
+    [
+        0x56,
+        function (context) {
+            
+        }
+    ],
+    // JUMPI
+    [
+        0x57,
+        function (context) {
+            
+        }
+    ],
+    // PC
+    // 程序计数器（PC）是已部署代码中的字节偏移量。它指示将执行哪个指令。
+    // 例如，当执行ADD时，PC会增加1，因为指令是1字节。PUSH指令大于一个字节，因此会相应地增加计数器。
+    // 
+    // 堆栈输出:counter，当前程序中此指令的PC。
+    [
+        0x58,
+        function (context) {
+            context.stack.push(BigInt(context.programCounter - 1))
+        }
+    ],
+    // MSIZE
+    [
+        0x59,
+        function (context) {
+            
+        }
+    ],
+    // GAS
+    [
+        0x5a,
+        function (context) {
+            
+        }
+    ],
+    // JUMPDEST 标记一个有效的跳转目标
+    // 标记一个对于 JUMP 或 JUMPI 的有效跳转目标。此操作在执行过程中对机器状态没有影响。
+    [
+        0x5b,
+        function () {}
+    ],
+    // PUSH0 将值0放在堆栈上
+    // 新的值被放在堆栈的顶部，增加所有其他值的索引。
+    // 因此，特定操作码的值必须按堆栈的反序推入。例如，使用MSTORE，首先推入的值必须是value，然后是offset。
+    [
+        0x5f,
+        function (context) {
+            context.stack.push(BIGINT_0);
         }
     ],
     
