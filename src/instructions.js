@@ -693,5 +693,33 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(BIGINT_0);
         }
     ],
+    // PUSH1 至 PUSH32
+    // 0x60 - 0x7f
+    // 将N字节项放在堆栈上
+    // 堆栈输出
+    // value：推入的值，向右对齐（放在最低有效字节中）。
+    [
+        0x60,
+        function (context) {
+            // 计算需要push的字节数
+            const size = context.opCode - 0x5f;
+
+            // 程序计数器 + 字节数 必须小于等于 代码字节数
+            if (context.programCounter + size > context.code.length) {
+                throw new Error('out of range');
+            }
+
+            if (!context.shouldDoJumpAnalysis) {
+                // 这一步的判断没看懂
+                context.stack.push(context.cachedPushes[runState.programCounter]);
+                context.programCounter += size;
+            } else {
+                // 从代码中截取需要推入的byte
+                const bytes = context.code.subarray(context.programCounter, context.programCounter + size);
+                context.stack.push(bytesToBigInt(bytes));
+                context.programCounter += size;
+            }
+        }
+    ],
     
 ])
