@@ -77,7 +77,17 @@ export function bytesToBigInt(bytes) {
 
 // BigInt 转 Uint8Array
 export function bigintToBytes(data) {
-    if (typeof data !== 'BigInt') {
+    if (typeof data !== 'bigint') {
         throw new Error('Input type is not BigInt');
     }
+
+    // 转为16进制字符串
+    const hex = data.toString(16);
+
+    // 填充到偶数位数
+    if (hex.length % 2) {
+        hex = '0' + hex;
+    }
+
+    return hexToBytes('0x' + hex);
 }
