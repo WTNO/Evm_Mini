@@ -1,4 +1,4 @@
-import { bigintToBytes, bytesToBigInt, bytesToHex } from "./bytes";
+import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft } from "./bytes";
 import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants";
 import { mod } from "./utils";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
@@ -599,7 +599,8 @@ export const opCodeFunctionMap = new Map([
             const value = context.stack.pop();
 
             // bigint 转 Uint8Array
-            const data = bigintToBytes(value);
+            // TODO：前面需要补0
+            const data = padZeroOnLeft(bigintToBytes(value));
 
             context.memory.set(Number(offset), 32, data)
         }
@@ -760,17 +761,22 @@ export const opCodeFunctionMap = new Map([
             const topicNum = context.opCode - 0xa0;
 
             // 获取topic
+            // TODO：前面补0
             const topics = new Array();
             for (let i = 0; i < topicNum; i++) {
                 topics[i] = context.stack.pop();
             }
 
-            let mem = new Uint8Array(0)
+            const topicBytes = topics.map(x => {
+                return padZeroOnLeft(bigintToBytes(x), 32);
+            })
+
+            let mem = new Uint8Array(0);
             if (size !== BIGINT_0) {
-                mem = context.memory.read(Number(offset), Number(size))
+                mem = context.memory.read(Number(offset), Number(size));
             }
 
-            context.interpreter.log(mem, topicNum, topics)
+            context.interpreter.log(mem, topicNum, topicBytes);
         }
     ],
 ])

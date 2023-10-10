@@ -91,3 +91,17 @@ export function bigintToBytes(data) {
 
     return hexToBytes('0x' + hex);
 }
+
+// 左边补0
+export function padZeroOnLeft(data, length) {
+    // 输入类型必须为Uint8Array
+    if (!(data instanceof Uint8Array)) {
+        throw new Error('input type must be Uint8Array');
+    }
+
+    if (data.length < length) {
+        const zeros = new Uint8Array(length - data.length);
+        return new Uint8Array([...zeros, ...msg]);
+    }
+    return data.subarray(-length);
+}
