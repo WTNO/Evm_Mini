@@ -749,10 +749,28 @@ export const opCodeFunctionMap = new Map([
     // 主题1：32字节的值。
     // ...
     // 主题4：32字节的值。
+    // TODO：待写interpreter中方法
     [
         0xa0,
         function (context) {
-            
+            const offset = context.stack.pop();
+            const size = context.stack.pop();
+
+            // topic数量
+            const topicNum = context.opCode - 0xa0;
+
+            // 获取topic
+            const topics = new Array();
+            for (let i = 0; i < topicNum; i++) {
+                topics[i] = context.stack.pop();
+            }
+
+            let mem = new Uint8Array(0)
+            if (size !== BIGINT_0) {
+                mem = context.memory.read(Number(offset), Number(size))
+            }
+
+            context.interpreter.log(mem, topicNum, topics)
         }
     ],
 ])
