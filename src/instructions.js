@@ -377,25 +377,33 @@ export const opCodeFunctionMap = new Map([
         }
     ],
     // 0x30 - 0x4a 部分涉及解释器interpreter和区块部分内容
-    // ADDRESS
+    // ADDRESS 获取当前执行账户的地址
     [
         0x30,
         function (context) {
-
+            // TODO
+            const address = bytesToBigInt(context.interpreter.getAddress().bytes)
+            context.stack.push(address)
         }
     ],
-    // BALANCE
+    // BALANCE 获取给定账户的余额
     [
         0x31,
-        function (context) {
-
+        async function (context) {
+            // 从stack获取地址
+            const addressBigInt = context.stack.pop()
+            // 转为address对象
+            const address = new Address(addresstoBytes(addressBigInt))
+            // TODO
+            const balance = await context.interpreter.getExternalBalance(address)
+            context.stack.push(balance)
         }
     ],
-    // ORIGIN
+    // ORIGIN 获取执行起始地址
     [
         0x32,
         function (context) {
-
+            context.stack.push(runState.interpreter.getTxOrigin())
         }
     ],
     // CALLER
