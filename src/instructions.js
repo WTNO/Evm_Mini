@@ -461,11 +461,11 @@ export const opCodeFunctionMap = new Map([
 
         }
     ],
-    // GASPRICE
+    // GASPRICE 获取当前环境中的gas价格
     [
         0x3a,
         function (context) {
-
+            context.stack.push(context.interpreter.getTxGasPrice())
         }
     ],
     // EXTCODESIZE
@@ -482,11 +482,14 @@ export const opCodeFunctionMap = new Map([
 
         }
     ],
-    // RETURNDATASIZE
+    // RETURNDATASIZE 获取当前环境中上一次call的输出数据大小
+    // 可以使用CALL, CALLCODE, DELEGATECALL 或 STATICCALL 创建子上下文。
+    // 返回最后执行的子上下文的返回数据的字节大小。
     [
         0x3d,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getReturnDataSize())
         }
     ],
     // RETURNDATACOPY
@@ -503,32 +506,34 @@ export const opCodeFunctionMap = new Map([
 
         }
     ],
-    // BLOCKHASH
+    // BLOCKHASH 获取最近完成的256个区块之一的哈希值
     [
         0x40,
         function (context) {
 
         }
     ],
-    // COINBASE
+    // COINBASE 获取区块的受益人地址
+    // 矿工的地址。
     [
         0x41,
         function (context) {
-
+            context.stack.push(context.interpreter.getBlockCoinbase())
         }
     ],
-    // TIMESTAMP
+    // TIMESTAMP 获取区块的时间戳
     [
         0x42,
         function (context) {
-
+            context.stack.push(context.interpreter.getBlockTimestamp())
         }
     ],
-    // NUMBER
+    // NUMBER 获取当前区块的编号
     [
         0x43,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getBlockNumber());
         }
     ],
     // DIFFICULTY
