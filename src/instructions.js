@@ -403,35 +403,41 @@ export const opCodeFunctionMap = new Map([
     [
         0x32,
         function (context) {
+            // TODO
             context.stack.push(runState.interpreter.getTxOrigin())
         }
     ],
-    // CALLER
+    // CALLER 获取呼叫者地址
     [
         0x33,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getCaller());
         }
     ],
-    // CALLVALUE
+    // CALLVALUE 获取负责此执行的指令/交易存入的价值
     [
         0x34,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getCallValue());
         }
     ],
-    // CALLDATALOAD
+    // CALLDATALOAD 获取当前环境的输入数据
     [
         0x35,
         function (context) {
-
+            
+            const offset = context.stack.pop();
         }
     ],
     // CALLDATASIZE
     [
         0x36,
         function (context) {
-
+            // TODO
+            const r = context.interpreter.getCallDataSize()
+            context.stack.push(r)
         }
     ],
     // CALLDATACOPY
@@ -445,7 +451,7 @@ export const opCodeFunctionMap = new Map([
     [
         0x38,
         function (context) {
-
+            context.stack.push(context.interpreter.getCodeSize())
         }
     ],
     // CODECOPY
