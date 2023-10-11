@@ -547,28 +547,32 @@ export const opCodeFunctionMap = new Map([
     [
         0x45,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getBlockGasLimit())
         }
     ],
     // CHAINID
     [
         0x46,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getChainId())
         }
     ],
     // SELFBALANCE
     [
         0x47,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getSelfBalance())
         }
     ],
     // BASEFEE
     [
         0x48,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getBlockBaseFee())
         }
     ],
     // BLOBHASH
@@ -582,7 +586,8 @@ export const opCodeFunctionMap = new Map([
     [
         0x4a,
         function (context) {
-
+            // TODO
+            context.stack.push(context.interpreter.getBlobBaseFee())
         }
     ],
     // POP 从堆栈中移除项目
