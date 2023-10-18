@@ -1,4 +1,4 @@
-import { BIGINT_0 } from "./constants";
+import { BIGINT_0 } from "./constants.js";
 
 export function concatBytes(...arrs) {
     if (arrs.length == 1) return arrs[0];
