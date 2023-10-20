@@ -427,7 +427,7 @@ export const opCodeFunctionMap = new Map([
     [
         0x35,
         function (context) {
-            
+
             const offset = context.stack.pop();
         }
     ],
@@ -672,10 +672,25 @@ export const opCodeFunctionMap = new Map([
         }
     ],
     // JUMPI
+    // 堆栈输入
+    // counter：已部署代码中的字节偏移量，将从此处继续执行。必须是JUMPDEST指令。
+    // b：只有当该值不为 0 时，程序计数器才会被更改为新值。否则，程序计数器将简单地递增并执行下一条指令。
     [
         0x57,
         function (context) {
+            const counter = context.stack.pop();
+            const b = context.stack.pop();
 
+            if (b !== BIGINT_0) {
+                // 程序计数器不能超过代码大小
+                if (counter > context.interpreter.getCodeSize()) {
+                    throw new Error('invalid JUMP');
+                }
+            }
+
+            // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
+
+            context.programCounter = counter;
         }
     ],
     // PC
