@@ -1,6 +1,6 @@
 import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft } from "./bytes";
 import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants";
-import { mod } from "./utils";
+import { getByteSlice, mod } from "./utils";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 
 
@@ -454,11 +454,24 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(context.interpreter.getCodeSize())
         }
     ],
-    // CODECOPY
+    // CODECOPY 将当前环境中运行的代码复制到内存
+    // 堆栈输入
+    // destOffset：将复制结果在内存中的字节偏移量。
+    // offset：要复制的代码中的字节偏移量。
+    // size：要复制的字节大小。
     [
         0x39,
         function (context) {
+            const destOffset = context.stack.pop()
+            const offset = context.stack.pop()
+            const size = context.stack.pop()
 
+            // 截取code，长度不足的在后面补0
+            // TODO:getCode getByteSlice
+            const code = getByteSlice(context.interpreter.getCode(), offset, size)
+
+            // 将code写入内存
+            context.memory.set(Number(destOffset), Number(size), value);
         }
     ],
     // GASPRICE 获取当前环境中的gas价格
@@ -657,11 +670,27 @@ export const opCodeFunctionMap = new Map([
 
         }
     ],
-    // SSTORE
+    // SSTORE 将word保存到存储器
+    // 堆栈输入
+    // key：存储中的32字节密钥。
+    // value：要存储的 32 字节值。
     [
         0x55,
         function (context) {
+            const key = context.stack.pop();
+            const value = context.stack.pop();
 
+            // 现将bigint转为uint8Array(byte)，然后补0到32位
+            const k = padZeroOnLeft(bigintToBytes(key), 32);
+
+            if (value === BIGINT_0) {
+                value = Uint8Array.from([]);
+            } else {
+                value = bigintToBytes(value)
+            }
+
+            // TODO:存入storage中
+            // context.interpreter.storage(k, value);
         }
     ],
     // JUMP 更改程序计数器，从而中断执行到已部署代码中另一个点的线性路径。它用于实现类似函数的功能。

@@ -7,3 +7,7 @@ export function mod(a, b) {
     }
     return r;
 }
+
+export function getByteSlice(bytes, offset, size) {
+    
+}
