@@ -664,11 +664,22 @@ export const opCodeFunctionMap = new Map([
 
         }
     ],
-    // JUMP
+    // JUMP 更改程序计数器，从而中断执行到已部署代码中另一个点的线性路径。它用于实现类似函数的功能。
+    // 堆栈输入
+    // counter：已部署代码中的字节偏移量，将从此处继续执行。必须是JUMPDEST指令。
     [
         0x56,
         function (context) {
+            const counter = context.stack.pop();
 
+            // 程序计数器不能超过代码大小
+            if (counter > context.interpreter.getCodeSize()) {
+                throw new Error('invalid JUMP');
+            }
+
+            // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
+
+            context.programCounter = Number(counter);
         }
     ],
     // JUMPI
@@ -686,11 +697,11 @@ export const opCodeFunctionMap = new Map([
                 if (counter > context.interpreter.getCodeSize()) {
                     throw new Error('invalid JUMP');
                 }
+
+                // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
+
+                context.programCounter = Number(counter);
             }
-
-            // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
-
-            context.programCounter = counter;
         }
     ],
     // PC
