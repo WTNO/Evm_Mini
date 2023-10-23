@@ -467,7 +467,7 @@ export const opCodeFunctionMap = new Map([
             const size = context.stack.pop()
 
             // 截取code，长度不足的在后面补0
-            // TODO:getCode getByteSlice
+            // TODO:getCode
             const code = getByteSlice(context.interpreter.getCode(), offset, size)
 
             // 将code写入内存

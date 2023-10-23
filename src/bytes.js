@@ -5,7 +5,7 @@ export function concatBytes(...arrs) {
 
     // 计算传入数组总长度
     const length = arrs.reduce((total, arr) => {
-        if (typeof arr != Uint8Array) {
+        if (!(arr instanceof Uint8Array)) {
             throw new Error('The arrs parameter must be of type Uint8Array')
         }
         total + arr.length
@@ -64,7 +64,7 @@ export function bytesToHex(bytes) {
 // Uint8Array 转 BigInt 
 // bytes[0]是最大端，bytes[bytes.length - 1]是最小端
 export function bytesToBigInt(bytes) {
-    if (typeof bytes !== 'Uint8Array') {
+    if (!(bytes instanceof Uint8Array)) {
         throw new Error('Input type is not Uint8Array');
     }
     const hex = bytesToHex(bytes);
@@ -101,7 +101,21 @@ export function padZeroOnLeft(data, length) {
 
     if (data.length < length) {
         const zeros = new Uint8Array(length - data.length);
-        return new Uint8Array([...zeros, ...msg]);
+        return new Uint8Array([...zeros, ...data]);
+    }
+    return data.subarray(-length);
+}
+
+// 右边补0
+export function padZeroOnRight(data, length) {
+    // 输入类型必须为Uint8Array
+    if (!(data instanceof Uint8Array)) {
+        throw new Error('input type must be Uint8Array');
+    }
+
+    if (data.length < length) {
+        const zeros = new Uint8Array(length - data.length);
+        return new Uint8Array([...data, ...zeros]);
     }
     return data.subarray(-length);
 }

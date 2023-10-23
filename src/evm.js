@@ -1,9 +1,10 @@
 import { hexToBytes, bytesToHex } from "./bytes.js";
+import { BIGINT_0 } from "./constants.js";
 import { opcodes } from "./opcode.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 
 
-outputOpCode()
+// outputOpCode()
 
 // 首先尝试输出操作码
 export function outputOpCode() {
@@ -54,9 +55,13 @@ function roundLog(num, base) {
 }
 
 function test() {
-    const data = new Uint8Array([1, 11, 31, 254, 22, 33]);
-    const r = BigInt(bytesToHex(keccak256(data)));
-    console.log(r)
+    // const data = new Uint8Array([1, 11, 31, 254, 22, 33]);
+    // const r = BigInt(bytesToHex(keccak256(data)));
+    // console.log(r)
+
+    const data = new Uint8Array();
+
+    console.log(data instanceof Uint8Array);
 }
 
-// test();
+test();
