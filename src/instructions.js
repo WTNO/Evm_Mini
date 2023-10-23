@@ -1,6 +1,6 @@
 import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft } from "./bytes";
 import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants";
-import { getByteSlice, mod } from "./utils";
+import { getByteSlice, isJumpdest, mod } from "./utils";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 
 
@@ -707,6 +707,9 @@ export const opCodeFunctionMap = new Map([
             }
 
             // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
+            if (!isJumpdest(context, counter)) {
+                throw new Error('JUMP ERROR')
+            }
 
             context.programCounter = Number(counter);
         }
@@ -728,7 +731,10 @@ export const opCodeFunctionMap = new Map([
                 }
 
                 // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
-
+                if (!isJumpdest(context, counter)) {
+                    throw new Error('JUMP ERROR')
+                }
+                
                 context.programCounter = Number(counter);
             }
         }

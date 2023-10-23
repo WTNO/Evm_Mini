@@ -26,3 +26,7 @@ export function getByteSlice(bytes, offset, size) {
 
     return data;
 }
+
+export function isJumpdest(context, counter) {
+    return context.bytecode[counter] === 0x5b
+}
