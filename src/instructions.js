@@ -637,7 +637,7 @@ export const opCodeFunctionMap = new Map([
 
             // bigint 转 Uint8Array
             // TODO：前面需要补0
-            const data = padZeroOnLeft(bigintToBytes(value));
+            const data = padZeroOnLeft(bigintToBytes(value), 32);
 
             context.memory.set(Number(offset), 32, data)
         }

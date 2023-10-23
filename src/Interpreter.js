@@ -12,6 +12,7 @@ export class Interpreter {
             memory: new Memory(),
             stack: new Stack(),
             opCode: 0xfe,
+            interpreter: this,
         }
     }
 
@@ -24,7 +25,7 @@ export class Interpreter {
     }
 
     getCallValue() {
-        return 0;
+        return 0n;
     }
 
     run() {
@@ -33,15 +34,14 @@ export class Interpreter {
             const opCode = this.context.codebyte[pc];
             this.context.opCode = opCode;
 
-            console.log(typeof opCode);
-
-            const opFunc = opCodeFunctionMap.get(opCode);
-
+            let opFunc;
             // 如果为PUSH指令
-            // if (opCode >= 0x5f && opCode <= 0x7f) {
-            //     const jumpNum = opCode - 0x5f;
-            //     this.context.programCounter += jumpNum;
-            // }
+            if (opCode >= 0x60 && opCode <= 0x7f) {
+                opFunc = opCodeFunctionMap.get(0x60);
+            } else{
+                opFunc = opCodeFunctionMap.get(opCode);
+            }
+
             this.context.programCounter++;
 
             opFunc(this.context);

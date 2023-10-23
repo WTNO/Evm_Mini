@@ -3,7 +3,7 @@ import { concatBytes } from "./bytes.js";
 const INIT_SIZE = 8192;
 
 function newSize(value) {
-    const remainder = value % 32;
+    const r = value % 32;
     if (r == 0) {
         return value;
     } else {

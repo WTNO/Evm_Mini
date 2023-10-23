@@ -4,7 +4,7 @@ export class Stack {
     constructor(maxHeight) {
         this._store = [];
         this._len = 0;
-        this._maxHeight = maxHeight !== null && maxHeight !== undefined && typeof maxHeight === 'number' ? maxHeight : 1024;
+        this._maxHeight = 1024;
     }
 
     push(value) {
@@ -54,7 +54,7 @@ export class Stack {
             throw new Error('stack underflow');
         }
 
-        if (len >= maxHeight) {
+        if (len >= this._maxHeight) {
             throw new Error('stack overflow');
         }
 
