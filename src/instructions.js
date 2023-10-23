@@ -1,6 +1,6 @@
-import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft } from "./bytes";
-import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants";
-import { getByteSlice, isJumpdest, mod } from "./utils";
+import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft } from "./bytes.js";
+import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants.js";
+import { getByteSlice, isJumpdest, mod } from "./utils.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 
 
@@ -734,7 +734,7 @@ export const opCodeFunctionMap = new Map([
                 if (!isJumpdest(context, counter)) {
                     throw new Error('JUMP ERROR')
                 }
-                
+
                 context.programCounter = Number(counter);
             }
         }
@@ -791,7 +791,7 @@ export const opCodeFunctionMap = new Map([
             const size = context.opCode - 0x5f;
 
             // 程序计数器 + 字节数 必须小于等于 代码字节数
-            if (context.programCounter + size > context.code.length) {
+            if (context.programCounter + size > context.codebyte.length) {
                 throw new Error('out of range');
             }
 

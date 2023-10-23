@@ -1,13 +1,14 @@
-import { opCodeFunctionMap } from "./instructions";
-import { Memory } from "./memory";
-import { Stack } from "./stack";
+import { hexToBytes } from "./bytes.js";
+import { opCodeFunctionMap } from "./instructions.js";
+import { Memory } from "./memory.js";
+import { Stack } from "./stack.js";
 
 //  解释器
 export class Interpreter {
     constructor(hex) {
         this.context = {
             programCounter: 0,
-            bytecode: hexToBytes(data),
+            codebyte: hexToBytes(hex),
             memory: new Memory(),
             stack: new Stack(),
 
@@ -15,11 +16,11 @@ export class Interpreter {
     }
 
     getCodeSize() {
-        return this.context.bytecode.length;
+        return this.context.codebyte.length;
     }
 
     getCode() {
-        return this.context.bytecode;
+        return this.context.codebyte;
     }
 
     getCallValue() {
@@ -27,20 +28,19 @@ export class Interpreter {
     }
 
     run() {
-        while (this.programCounter < this.context.bytecode.length) {
-            const pc = this.programCounter;
-            const opCode = this.context.bytecode[pc];
+        while (this.context.programCounter < this.context.codebyte.length) {
+            const pc = this.context.programCounter;
+            const opCode = this.context.codebyte[pc];
 
             console.log(typeof opCode);
 
             const opFunc = opCodeFunctionMap.get(opCode);
 
             // 如果为PUSH指令
-            if (pc >= 0x5f && pc <= 0x7f) {
-                const jumpNum = raw[pc] - 0x5f;
-                this.programCounter += jumpNum;
+            if (opCode >= 0x5f && opCode <= 0x7f) {
+                const jumpNum = opCode - 0x5f;
+                this.context.programCounter += jumpNum;
             }
-
             opFunc(this.context);
         }
     }
