@@ -26,9 +26,9 @@ export class Memory {
             return;
         }
 
-        const newSize = newSize(offset + size);
+        const nSize = newSize(offset + size);
         // 所需大小大于当前大小才扩容
-        const diff = newSize - this._store.length;
+        const diff = nSize - this._store.length;
         if (diff > 0) {
             const  expandSize = Math.ceil(diff / CONTAINER_SIZE) * CONTAINER_SIZE;
             // 扩容数组

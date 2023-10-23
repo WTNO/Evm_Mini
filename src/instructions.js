@@ -404,7 +404,7 @@ export const opCodeFunctionMap = new Map([
         0x32,
         function (context) {
             // TODO
-            context.stack.push(runState.interpreter.getTxOrigin())
+            context.stack.push(context.interpreter.getTxOrigin())
         }
     ],
     // CALLER 获取呼叫者地址
@@ -795,16 +795,9 @@ export const opCodeFunctionMap = new Map([
                 throw new Error('out of range');
             }
 
-            if (!context.shouldDoJumpAnalysis) {
-                // 这一步的判断没看懂
-                context.stack.push(context.cachedPushes[runState.programCounter]);
-                context.programCounter += size;
-            } else {
-                // 从代码中截取需要推入的byte
-                const bytes = context.code.subarray(context.programCounter, context.programCounter + size);
-                context.stack.push(bytesToBigInt(bytes));
-                context.programCounter += size;
-            }
+            const bytes = context.codebyte.subarray(context.programCounter, context.programCounter + size);
+            context.stack.push(bytesToBigInt(bytes));
+            context.programCounter += size;
         }
     ],
     // DUP1 - DUP16 复制第N个堆栈项
@@ -813,7 +806,7 @@ export const opCodeFunctionMap = new Map([
         0x80,
         function (context) {
             const position = context.opCode - 0x7f;
-            runState.stack.dup(position);
+            context.stack.dup(position);
         }
     ],
     // SWAP1 - SWAP16
@@ -822,7 +815,7 @@ export const opCodeFunctionMap = new Map([
     [
         0x90,
         function (context) {
-            const position = runState.opCode - 0x8f;
+            const position = context.opCode - 0x8f;
             context.stack.swap(position);
         }
     ],

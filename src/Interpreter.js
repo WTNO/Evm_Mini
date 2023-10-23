@@ -11,7 +11,7 @@ export class Interpreter {
             codebyte: hexToBytes(hex),
             memory: new Memory(),
             stack: new Stack(),
-
+            opCode: 0xfe,
         }
     }
 
@@ -31,16 +31,19 @@ export class Interpreter {
         while (this.context.programCounter < this.context.codebyte.length) {
             const pc = this.context.programCounter;
             const opCode = this.context.codebyte[pc];
+            this.context.opCode = opCode;
 
             console.log(typeof opCode);
 
             const opFunc = opCodeFunctionMap.get(opCode);
 
             // 如果为PUSH指令
-            if (opCode >= 0x5f && opCode <= 0x7f) {
-                const jumpNum = opCode - 0x5f;
-                this.context.programCounter += jumpNum;
-            }
+            // if (opCode >= 0x5f && opCode <= 0x7f) {
+            //     const jumpNum = opCode - 0x5f;
+            //     this.context.programCounter += jumpNum;
+            // }
+            this.context.programCounter++;
+
             opFunc(this.context);
         }
     }

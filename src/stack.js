@@ -17,7 +17,7 @@ export class Stack {
         }
 
         this._store.push(value);
-        this.len++;
+        this._len++;
     }
 
     pop() {
@@ -43,8 +43,8 @@ export class Stack {
         }
 
         const temp = this._store[this._len - 1];
-        this._store[this.len - 1] = this._store[this._len - position];
-        this._store[this.len - position] = temp;
+        this._store[this._len - 1] = this._store[this._len - position];
+        this._store[this._len - position] = temp;
     }
 
     // 复制指定栈中元素并将其副本压入栈顶
