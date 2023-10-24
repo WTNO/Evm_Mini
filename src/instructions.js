@@ -427,7 +427,6 @@ export const opCodeFunctionMap = new Map([
     [
         0x35,
         function (context) {
-
             const offset = context.stack.pop();
         }
     ],
@@ -731,7 +730,7 @@ export const opCodeFunctionMap = new Map([
                 }
 
                 // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
-                if (!isJumpdest(context, counter)) {
+                if (!isJumpdest(context, Number(counter))) {
                     throw new Error('JUMP ERROR')
                 }
 

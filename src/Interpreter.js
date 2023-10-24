@@ -38,7 +38,11 @@ export class Interpreter {
             // 如果为PUSH指令
             if (opCode >= 0x60 && opCode <= 0x7f) {
                 opFunc = opCodeFunctionMap.get(0x60);
-            } else{
+            } else if (opCode >= 0x80 && opCode <= 0x8f) {
+                opFunc = opCodeFunctionMap.get(0x80);
+            } else if (opCode >= 0x90 && opCode <= 0x9f) {
+                opFunc = opCodeFunctionMap.get(0x90);
+            } else {
                 opFunc = opCodeFunctionMap.get(opCode);
             }
 
