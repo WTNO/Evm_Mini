@@ -22,7 +22,7 @@ export function getByteSlice(bytes, offset, size) {
         end = bytes.length;
     }
 
-    const data = padZeroOnRight(bytes.subarray(begin, end), size);
+    const data = padZeroOnRight(bytes.subarray(Number(offset), Number(end)), Number(size));
 
     return data;
 }

@@ -82,7 +82,7 @@ export function bigintToBytes(data) {
     }
 
     // 转为16进制字符串
-    const hex = data.toString(16);
+    let hex = data.toString(16);
 
     // 填充到偶数位数
     if (hex.length % 2) {
