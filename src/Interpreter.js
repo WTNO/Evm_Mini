@@ -2,6 +2,7 @@ import { hexToBytes } from "./bytes.js";
 import { opCodeFunctionMap } from "./instructions.js";
 import { Memory } from "./memory.js";
 import { Stack } from "./stack.js";
+import { Storage } from "./storage.js";
 
 //  解释器
 export class Interpreter {
@@ -13,6 +14,7 @@ export class Interpreter {
             stack: new Stack(),
             opCode: 0xfe,
             interpreter: this,
+            storage: new Storage(),
         }
     }
 

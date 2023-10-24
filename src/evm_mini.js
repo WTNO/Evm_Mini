@@ -1,12 +1,338 @@
-import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft } from "./bytes.js";
-import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants.js";
-import { getByteSlice, isJumpdest, mod } from "./utils.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 
+const BIGINT_0 = BigInt(0)
+const BIGINT_1 = BigInt(1)
+const BIGINT_2 = BigInt(2)
+const BIGINT_3 = BigInt(3)
+const BIGINT_7 = BigInt(7)
+const BIGINT_8 = BigInt(8)
+
+const BIGINT_31 = BigInt(31)
+const BIGINT_32 = BigInt(32)
+
+const BIGINT_255 = BigInt(255)
+const BIGINT_256 = BigInt(256)
+
+
+const TWO_POW256 = BigInt('0x10000000000000000000000000000000000000000000000000000000000000000')
+
+const BIGINT_2EXP256 = BigInt('115792089237316195423570985008687907853269984665640564039457584007913129639936')
+
+// 2**256 - 1
+const MAX_INTEGER_BIGINT = BigInt('115792089237316195423570985008687907853269984665640564039457584007913129639935')
+
+// --------------------------------------------------------------------------------------------------------------------------
+const INIT_SIZE = 8192;
+
+function newSize(value) {
+    const r = value % 32;
+    if (r == 0) {
+        return value;
+    } else {
+        return value + 32 - r;
+    }
+}
+
+// 1KB
+const CONTAINER_SIZE = 8192
+
+// 内存地址是以字节为单位，因此使用Uint8Array存储
+class Memory {
+    constructor() {
+        this._store = new Uint8Array(INIT_SIZE);
+    }
+
+    // 扩容
+    resize(offset, size) {
+        if (size == 0) {
+            return;
+        }
+
+        const nSize = newSize(offset + size);
+        // 所需大小大于当前大小才扩容
+        const diff = nSize - this._store.length;
+        if (diff > 0) {
+            const  expandSize = Math.ceil(diff / CONTAINER_SIZE) * CONTAINER_SIZE;
+            // 扩容数组
+            this._store = concatBytes(this._store, new Uint8Array(expandSize));
+        }
+    }
+
+    // 将数据写入memory
+    set(offset, size, value) {
+        if (size === 0) {
+            return;
+        }
+
+        this.resize(offset, size);
+
+        if (size !== value.length) {
+            throw new Error('Invalid value size');
+        }
+
+        if (offset + size > this._store.length) {
+            throw new Error('Value exceeds memory capacity');
+        }
+
+        this._store.set(value, offset)
+    }
+
+    // 返回复制的副本，改动数组的内容不会影响到原数组
+    getCopy(offset, size) {
+        this.resize(offset, size);
+        
+        const result = new Uint8Array(size);
+
+        result.set(this._store.subarray(offset, offset + size));
+
+        return result;
+    }
+
+    // 使用该方法返回的新数组还是建立在原有的 Buffer 之上的，所以，改动数组的内容将会影响到原数组
+    getPtr(offset, size) {
+        this.resize(offset, size);
+        return this._store.subarray(offset, offset + size);
+    }
+}
+
+// --------------------------------------------------------------------------------------------------------------------------
+
+// 堆栈的最大深度为 1024 项
+// 堆栈中的每个项目是一个 256 位（32 字节）的字。
+class Stack {
+    constructor(maxHeight) {
+        this._store = [];
+        this._len = 0;
+        this._maxHeight = 1024;
+    }
+
+    push(value) {
+        if (typeof value !== 'bigint') {
+            throw new Error('Invalid value type. Only bigint is allowed.');
+        }
+
+        if (this._len > this._maxHeight) {
+            throw new Error('stack overflow');
+        }
+
+        this._store.push(value);
+        this._len++;
+    }
+
+    pop() {
+        if (!this.isEmpty()) {
+            this._len--;
+            return this._store.pop();
+        } else {
+            throw new Error('stack underflow');
+        }
+    }
+
+    peek() {
+        if (!this.isEmpty()) {
+            return this._store[this._store.length - 1];
+        } else {
+            throw new Error('stack underflow');
+        }
+    }
+
+    swap(position) {
+        if (this._len <= position) {
+            throw new Error('stack underflow');
+        }
+
+        const temp = this._store[this._len - 1];
+        this._store[this._len - 1] = this._store[this._len - position];
+        this._store[this._len - position] = temp;
+    }
+
+    // 复制指定栈中元素并将其副本压入栈顶
+    dup(position) {
+        const len = this._len;
+        if (len < position) {
+            throw new Error('stack underflow');
+        }
+
+        if (len >= this._maxHeight) {
+            throw new Error('stack overflow');
+        }
+
+        const i = len - position;
+        this._store.push(this._store[i]);
+        this._len++;
+    }
+
+    isEmpty() {
+        return this._len === 0;
+    }
+
+    size() {
+        return this._len;
+    }
+
+    getStack() {
+        return this._store.slice(0, this._len)
+    }
+}
+
+// --------------------------------------------------------------------------------------------------------------------------
+
+function concatBytes(...arrs) {
+    if (arrs.length == 1) return arrs[0];
+
+    // 计算传入数组总长度
+    const length = arrs.reduce((total, arr) => {
+        if (!(arr instanceof Uint8Array)) {
+            throw new Error('The arrs parameter must be of type Uint8Array')
+        }
+        total + arr.length
+    }, 0);
+
+    const newArr = new Uint8Array(length);
+
+    let offset = 0;
+    arrs.forEach(function (arr, index) {
+        newArr.set(arr, offset);
+        offset += arr.length;
+    });
+
+    return newArr;
+}
+
+// 16进制字符串 转 Uint8Array
+function hexToBytes(hexStr) {
+    if (typeof hexStr !== 'string') {
+        throw new Error(`hex argument type ${typeof hexStr} must be of type string`);
+    }
+
+    if (!hexStr.startsWith("0x")) {
+        throw new Error(`prefixed hex input should start with 0x, got ${hexStr.substring(0, 2)}`);
+    }
+
+    // 长度为单数，头部补0
+    if (hexStr.length % 2) {
+        hexStr = "0" + hexStr.substring(2);
+    } else {
+        hexStr = hexStr.substring(2);
+    }
+
+    const result = new Uint8Array(hexStr.length / 2);
+
+    for (let i = 0; i < hexStr.length / 2; i++) {
+        // 每两位16进制的字符串转坏为一个byte
+        result[i] = parseInt(hexStr.slice(i * 2, (i + 1) * 2), 16);
+    }
+
+    return result;
+}
+
+const hexByByte = Array.from({ length: 256 }, (v, i) => i.toString(16).padStart(2, '0'))
+
+// Uint8Array 转 16进制字符串
+function bytesToHex(bytes) {
+    let hex = '0x'
+    if (bytes === undefined || bytes.length === 0) return hex
+    for (const byte of bytes) {
+        hex += hexByByte[byte]
+    }
+    return hex
+}
+
+// Uint8Array 转 BigInt 
+// bytes[0]是最大端，bytes[bytes.length - 1]是最小端
+function bytesToBigInt(bytes) {
+    if (!(bytes instanceof Uint8Array)) {
+        throw new Error('Input type is not Uint8Array');
+    }
+    const hex = bytesToHex(bytes);
+    if (hex === '0x') {
+        return BIGINT_0;
+    }
+
+    return BigInt(hex);
+}
+
+// BigInt 转 Uint8Array
+function bigintToBytes(data) {
+    if (typeof data !== 'bigint') {
+        throw new Error('Input type is not BigInt');
+    }
+
+    // 转为16进制字符串
+    let hex = data.toString(16);
+
+    // 填充到偶数位数
+    if (hex.length % 2) {
+        hex = '0' + hex;
+    }
+
+    return hexToBytes('0x' + hex);
+}
+
+// 左边补0
+function padZeroOnLeft(data, length) {
+    // 输入类型必须为Uint8Array
+    if (!(data instanceof Uint8Array)) {
+        throw new Error('input type must be Uint8Array');
+    }
+
+    if (data.length < length) {
+        const zeros = new Uint8Array(length - data.length);
+        return new Uint8Array([...zeros, ...data]);
+    }
+    return data.subarray(-length);
+}
+
+// 右边补0
+function padZeroOnRight(data, length) {
+    // 输入类型必须为Uint8Array
+    if (!(data instanceof Uint8Array)) {
+        throw new Error('input type must be Uint8Array');
+    }
+
+    if (data.length < length) {
+        const zeros = new Uint8Array(length - data.length);
+        return new Uint8Array([...data, ...zeros]);
+    }
+    return data.subarray(-length);
+}
+
+// --------------------------------------------------------------------------------------------------------------------------
+
+function mod(a, b) {
+    let r = a % b;
+    if (r < BIGINT_0) {
+        r = b + r;
+    }
+    return r;
+}
+
+function getByteSlice(bytes, offset, size) {
+    if (!(bytes instanceof Uint8Array)) {
+        throw new Error('Input type is not Uint8Array');
+    }
+
+    const len = BigInt(bytes.length);
+
+    let end = offset + size;
+
+    if (end > bytes.length) {
+        end = bytes.length;
+    }
+
+    const data = padZeroOnRight(bytes.subarray(Number(offset), Number(end)), Number(size));
+
+    return data;
+}
+
+function isJumpdest(context, counter) {
+    return context.codebyte[counter] === 0x5b
+}
+
+// --------------------------------------------------------------------------------------------------------------------------
 
 // 指令集
-
-export const opCodeFunctionMap = new Map([
+const opCodeFunctionMap = new Map([
     // STOP
     [
         0x00,
@@ -690,7 +1016,7 @@ export const opCodeFunctionMap = new Map([
             }
 
             // TODO:存入storage中
-            context.interpreter.storage.set(k, v);
+            // context.interpreter.storage(k, v);
         }
     ],
     // JUMP 更改程序计数器，从而中断执行到已部署代码中另一个点的线性路径。它用于实现类似函数的功能。
@@ -873,3 +1199,84 @@ export const opCodeFunctionMap = new Map([
         }
     ],
 ])
+
+// --------------------------------------------------------------------------------------------------------------------------
+
+//  解释器
+class Interpreter {
+    constructor(hex) {
+        this.context = {
+            programCounter: 0,
+            codebyte: hexToBytes(hex),
+            memory: new Memory(),
+            stack: new Stack(),
+            opCode: 0xfe,
+            interpreter: this,
+        }
+    }
+
+    getCodeSize() {
+        return this.context.codebyte.length;
+    }
+
+    getCode() {
+        return this.context.codebyte;
+    }
+
+    getCallValue() {
+        return 0n;
+    }
+
+    run() {
+        while (this.context.programCounter < this.context.codebyte.length) {
+            const pc = this.context.programCounter;
+            const opCode = this.context.codebyte[pc];
+            this.context.opCode = opCode;
+
+            let opFunc;
+            // 如果为PUSH指令
+            if (opCode >= 0x60 && opCode <= 0x7f) {
+                opFunc = opCodeFunctionMap.get(0x60);
+            } else if (opCode >= 0x80 && opCode <= 0x8f) {
+                opFunc = opCodeFunctionMap.get(0x80);
+            } else if (opCode >= 0x90 && opCode <= 0x9f) {
+                opFunc = opCodeFunctionMap.get(0x90);
+            } else {
+                opFunc = opCodeFunctionMap.get(opCode);
+            }
+
+            this.context.programCounter++;
+
+            opFunc(this.context);
+
+            console.log('stack:', this.context.stack._store);
+            console.log('memory:', this.context.memory._store);
+            console.log('returnData:', this.context.returnData);
+            console.log('-----------------------------------------------------')
+        }
+    }
+}
+
+// --------------------------------------------------------------------------------------------------------------------------
+
+function run() {
+    // const data = '0x608060405234801561001057600080fd5b50600360015560c1806100246000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c806360fe47b114604157806395cacbe014605d578063c82fdf36146075575b600080fd5b605b60048036036020811015605557600080fd5b5035607b565b005b60636080565b60408051918252519081900360200190f35b60636086565b600055565b60015481565b6000548156fea265627a7a723058204e00129b67b55015b0de73c3167fb19ae30a4bb9b293318b7fb6c40bced080b864736f6c634300050a0032';
+    const data = '0x608060405234801561000f575f80fd5b50600360018190555061016f806100255f395ff3fe608060405234801561000f575f80fd5b506004361061003f575f3560e01c806360fe47b11461004357806395cacbe01461005f578063c82fdf361461007d575b5f80fd5b61005d600480360381019061005891906100e6565b61009b565b005b6100676100a4565b6040516100749190610120565b60405180910390f35b6100856100aa565b6040516100929190610120565b60405180910390f35b805f8190555050565b60015481565b5f5481565b5f80fd5b5f819050919050565b6100c5816100b3565b81146100cf575f80fd5b50565b5f813590506100e0816100bc565b92915050565b5f602082840312156100fb576100fa6100af565b5b5f610108848285016100d2565b91505092915050565b61011a816100b3565b82525050565b5f6020820190506101335f830184610111565b9291505056fea264697066735822122005c408db9d51b7388bee0e40bd0d42dfa065917597528e34f06f8d43578a302c64736f6c63430008150033';
+    const interpreter = new Interpreter(data);
+    try {
+        interpreter.run();
+    } catch (error) {
+        if (error.message === 'STOP') {
+            console.log('STOP');
+        } else {
+            console.log(error);
+        }
+    }
+    console.log('stack:', interpreter.context.stack);
+    console.log('memory:', interpreter.context.memory);
+    console.log('returnData:', interpreter.context.returnData);
+}
+
+run();
+
+// --------------------------------------------------------------------------------------------------------------------------
