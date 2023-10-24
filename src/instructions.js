@@ -470,7 +470,7 @@ export const opCodeFunctionMap = new Map([
             const code = getByteSlice(context.interpreter.getCode(), offset, size)
 
             // 将code写入内存
-            context.memory.set(Number(destOffset), Number(size), value);
+            context.memory.set(Number(destOffset), Number(size), code);
         }
     ],
     // GASPRICE 获取当前环境中的gas价格
@@ -855,6 +855,21 @@ export const opCodeFunctionMap = new Map([
             }
 
             context.interpreter.log(mem, topicNum, topicBytes);
+        }
+    ],
+    // RETURN 停止执行并返回输出数据
+    // offset：在内存中的字节偏移量，用于复制将作为此上下文的返回数据的内容。
+    // size：要复制的字节大小（返回数据的大小）。
+    [
+        0xf3,
+        function (context) {
+            const offset = context.stack.pop();
+            const size = context.stack.pop();
+
+            // 从内存获取返回数据
+            const data = context.memory.getPtr(Number(offset), Number(size));
+            context.returnData = data;
+            throw new Error('STOP');
         }
     ],
 ])

@@ -70,8 +70,18 @@ function test() {
 function run() {
     const data = '0x608060405234801561001057600080fd5b50600360015560c1806100246000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c806360fe47b114604157806395cacbe014605d578063c82fdf36146075575b600080fd5b605b60048036036020811015605557600080fd5b5035607b565b005b60636080565b60408051918252519081900360200190f35b60636086565b600055565b60015481565b6000548156fea265627a7a723058204e00129b67b55015b0de73c3167fb19ae30a4bb9b293318b7fb6c40bced080b864736f6c634300050a0032';
     const interpreter = new Interpreter(data);
-    console.log('aaaaaaaaa')
-    interpreter.run();
+    try {
+        interpreter.run();
+    } catch (error) {
+        if (error.message === 'STOP') {
+            console.log('STOP');
+        } else {
+            console.log(error);
+        }
+    }
+    console.log('stack:', interpreter.context.stack);
+    console.log('memory:', interpreter.context.memory);
+    console.log('returnData:', interpreter.context.returnData);
 }
 
 run();
