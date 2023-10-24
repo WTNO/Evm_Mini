@@ -49,6 +49,11 @@ export class Interpreter {
             this.context.programCounter++;
 
             opFunc(this.context);
+
+            console.log('stack:', this.context.stack._store);
+            console.log('memory:', this.context.memory._store);
+            console.log('returnData:', this.context.returnData);
+            console.log('-----------------------------------------------------')
         }
     }
 }
