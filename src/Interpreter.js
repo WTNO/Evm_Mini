@@ -6,15 +6,17 @@ import { Storage } from "./storage.js";
 
 //  解释器
 export class Interpreter {
-    constructor(hex) {
+    constructor(transaction, evm) {
         this.context = {
             programCounter: 0,
-            codebyte: hexToBytes(hex),
+            codebyte: hexToBytes(transaction.data),
             memory: new Memory(),
             stack: new Stack(),
             opCode: 0xfe,
             interpreter: this,
-            storage: new Storage(),
+            returnData: null,
+            storage: evm.WORLD_STORAGE,
+            from: transaction.from,
         }
     }
 
@@ -52,10 +54,12 @@ export class Interpreter {
 
             opFunc(this.context);
 
-            console.log('stack:', this.context.stack._store);
-            console.log('memory:', this.context.memory._store);
-            console.log('returnData:', this.context.returnData);
-            console.log('-----------------------------------------------------')
+            // console.log('stack:', this.context.stack._store);
+            // console.log('memory:', this.context.memory._store);
+            // console.log('returnData:', this.context.returnData);
+            // console.log('-----------------------------------------------------')
         }
+
+        return this.context.returnData;
     }
 }

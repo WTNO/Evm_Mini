@@ -689,8 +689,8 @@ export const opCodeFunctionMap = new Map([
                 v = bigintToBytes(value)
             }
 
-            // TODO:存入storage中
-            context.interpreter.storage.set(k, v);
+            // TODO:这里是from还是创建的地址呢
+            context.interpreter.storage[context.from] = {k: v};
         }
     ],
     // JUMP 更改程序计数器，从而中断执行到已部署代码中另一个点的线性路径。它用于实现类似函数的功能。
