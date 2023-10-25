@@ -75,7 +75,7 @@ var transaction = {
     value: 0n
 }
 
-const WORLD_STATE = { "0x1872Bbd8CB1A4dED9B93793f1E09ef8C8C3f2958": { nonce: 1, balance: 1000000n, code: null} };
+const WORLD_STATE = { "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5": { nonce: 1, balance: 1000000n, code: null} };
 const WORLD_STORAGE = {};
 
 const EVM = {
@@ -87,22 +87,38 @@ const EVM = {
 
         // 如果tx中to为空，则是部署合同
         if (transaction.to === null) {
-            
+            const fromBytes = hexToBytes(transaction.from);
+            const nonceBytes = new Uint8Array([transaction.nonce]);
+            const hash = keccak256(new Uint8Array(...fromBytes, ...nonceBytes))
+            var contractAddress = '0x' + bytesToHex(hash).substring(26);
+
+            // 初始化世界状态
+            WORLD_STATE[contractAddress] = {
+                nonce: 1,
+                balance: 0,
+                // code: result.paylod
+            }
+
+            WORLD_STATE[this.tx.from].nonce += 1
+
+            WORLD_STORAGE[contractAddress] = {};
+
+            console.log("new contract created : " + contractAddress);
         }
 
-        const interpreter = new Interpreter(data);
-        try {
-            interpreter.run();
-        } catch (error) {
-            if (error.message === 'STOP') {
-                console.log('STOP');
-            } else {
-                console.log(error);
-            }
-        }
-        console.log('stack:', interpreter.context.stack);
-        console.log('memory:', interpreter.context.memory);
-        console.log('returnData:', interpreter.context.returnData);
+        // const interpreter = new Interpreter(data);
+        // try {
+        //     interpreter.run();
+        // } catch (error) {
+        //     if (error.message === 'STOP') {
+        //         console.log('STOP');
+        //     } else {
+        //         console.log(error);
+        //     }
+        // }
+        // console.log('stack:', interpreter.context.stack);
+        // console.log('memory:', interpreter.context.memory);
+        // console.log('returnData:', interpreter.context.returnData);
     }
 }
 
