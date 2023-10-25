@@ -15,7 +15,7 @@ export class Interpreter {
             opCode: 0xfe,
             interpreter: this,
             returnData: null,
-            storage: evm.WORLD_STORAGE,
+            storage: evm.storage,
             from: transaction.from,
         }
     }
@@ -53,11 +53,6 @@ export class Interpreter {
             this.context.programCounter++;
 
             opFunc(this.context);
-
-            // console.log('stack:', this.context.stack._store);
-            // console.log('memory:', this.context.memory._store);
-            // console.log('returnData:', this.context.returnData);
-            // console.log('-----------------------------------------------------')
         }
 
         return this.context.returnData;

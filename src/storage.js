@@ -7,6 +7,7 @@ export class Storage {
         let map = this._store.get(address);
         if (map === undefined || map === null) {
             map = new Map();
+            this._store.set(address, map);
         }
         map.set(k, v);
     }
