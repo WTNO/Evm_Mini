@@ -1031,17 +1031,17 @@ const opCodeFunctionMap = new Map([
             const value = context.stack.pop();
 
             // 现将bigint转为uint8Array(byte)，然后补0到32位
-            const k = padZeroOnLeft(bigintToBytes(key), 32);
+            // const k = padZeroOnLeft(bigintToBytes(key), 32);
 
-            let v;
-            if (value === BIGINT_0) {
-                v = Uint8Array.from([]);
-            } else {
-                v = bigintToBytes(value)
-            }
+            // let v;
+            // if (value === BIGINT_0) {
+            //     v = Uint8Array.from([]);
+            // } else {
+            //     v = bigintToBytes(value)
+            // }
 
             // TODO:这里是from还是创建的地址呢
-            context.storage.put(context.from, k, v);
+            context.storage.put(context.from, key, value);
         }
     ],
     // JUMP 更改程序计数器，从而中断执行到已部署代码中另一个点的线性路径。它用于实现类似函数的功能。
@@ -1256,26 +1256,34 @@ class Interpreter {
     }
 
     run() {
-        while (this.context.programCounter < this.context.codebyte.length) {
-            const pc = this.context.programCounter;
-            const opCode = this.context.codebyte[pc];
-            this.context.opCode = opCode;
+        try {
+            while (this.context.programCounter < this.context.codebyte.length) {
+                const pc = this.context.programCounter;
+                const opCode = this.context.codebyte[pc];
+                this.context.opCode = opCode;
 
-            let opFunc;
-            // 如果为PUSH指令
-            if (opCode >= 0x60 && opCode <= 0x7f) {
-                opFunc = opCodeFunctionMap.get(0x60);
-            } else if (opCode >= 0x80 && opCode <= 0x8f) {
-                opFunc = opCodeFunctionMap.get(0x80);
-            } else if (opCode >= 0x90 && opCode <= 0x9f) {
-                opFunc = opCodeFunctionMap.get(0x90);
-            } else {
-                opFunc = opCodeFunctionMap.get(opCode);
+                let opFunc;
+                // 如果为PUSH指令
+                if (opCode >= 0x60 && opCode <= 0x7f) {
+                    opFunc = opCodeFunctionMap.get(0x60);
+                } else if (opCode >= 0x80 && opCode <= 0x8f) {
+                    opFunc = opCodeFunctionMap.get(0x80);
+                } else if (opCode >= 0x90 && opCode <= 0x9f) {
+                    opFunc = opCodeFunctionMap.get(0x90);
+                } else {
+                    opFunc = opCodeFunctionMap.get(opCode);
+                }
+
+                this.context.programCounter++;
+
+                opFunc(this.context);
             }
-
-            this.context.programCounter++;
-
-            opFunc(this.context);
+        } catch (error) {
+            if (error.message === 'STOP') {
+                console.log('STOP');
+            } else {
+                console.log(error);
+            }
         }
 
         return this.context.returnData;
@@ -1301,17 +1309,7 @@ const EVM = {
     run: function(transaction) {
         const interpreter = new Interpreter(transaction, this);
 
-        let returnData;
-
-        try {
-            returnData = interpreter.run();
-        } catch (error) {
-            if (error.message === 'STOP') {
-                console.log('STOP');
-            } else {
-                console.log(error);
-            }
-        }
+        const returnData = interpreter.run();
 
         console.log('stack:', interpreter.context.stack);
         console.log('memory:', interpreter.context.memory);

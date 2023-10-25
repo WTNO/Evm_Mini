@@ -20,17 +20,7 @@ const EVM = {
     run: function(transaction) {
         const interpreter = new Interpreter(transaction, this);
 
-        let returnData;
-
-        try {
-            returnData = interpreter.run();
-        } catch (error) {
-            if (error.message === 'STOP') {
-                console.log('STOP');
-            } else {
-                console.log(error);
-            }
-        }
+        const returnData = interpreter.run();
 
         console.log('stack:', interpreter.context.stack);
         console.log('memory:', interpreter.context.memory);

@@ -680,17 +680,17 @@ export const opCodeFunctionMap = new Map([
             const value = context.stack.pop();
 
             // 现将bigint转为uint8Array(byte)，然后补0到32位
-            const k = padZeroOnLeft(bigintToBytes(key), 32);
+            // const k = padZeroOnLeft(bigintToBytes(key), 32);
 
-            let v;
-            if (value === BIGINT_0) {
-                v = Uint8Array.from([]);
-            } else {
-                v = bigintToBytes(value)
-            }
+            // let v;
+            // if (value === BIGINT_0) {
+            //     v = Uint8Array.from([]);
+            // } else {
+            //     v = bigintToBytes(value)
+            // }
 
             // TODO:这里是from还是创建的地址呢
-            context.storage.put(context.from, k, v);
+            context.storage.put(context.from, key, value);
         }
     ],
     // JUMP 更改程序计数器，从而中断执行到已部署代码中另一个点的线性路径。它用于实现类似函数的功能。
