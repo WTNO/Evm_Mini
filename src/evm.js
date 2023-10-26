@@ -54,8 +54,8 @@ const EVM = {
 
             console.log("new contract created : " + contractAddress);
         } else {
-            // 函数选择器
-            
+            WORLD_STATE[transaction.from].nonce += 1
+
         }
 
         console.log("world state:", WORLD_STATE);
@@ -64,6 +64,8 @@ const EVM = {
 }
 
 EVM.run(transaction);
+
+console.log("\n+++++++++++++++++++++++++++++++++++++++++++++\n")
 
 EVM.run(callTransaction);
 

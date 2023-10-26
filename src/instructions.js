@@ -432,6 +432,16 @@ export const opCodeFunctionMap = new Map([
         0x35,
         function (context) {
             const i = context.stack.pop();
+            if (i > context.interpreter.getCallDataSize()) {
+                context.stack.push(BIGINT_0);
+                return;
+            }
+
+            const loadData = context.interpreter.getCallData().subarray(Number(i), Number(i) + 32)
+
+            const l = bytesToBigInt(loadData);
+
+            context.stack.push(l);
         }
     ],
     // CALLDATASIZE 获取当前环境中输入数据的大小
@@ -440,7 +450,7 @@ export const opCodeFunctionMap = new Map([
         function (context) {
             // TODO
             const r = context.interpreter.getCallDataSize()
-            context.stack.push(r)
+            context.stack.push(BigInt(r))
         }
     ],
     // CALLDATACOPY
