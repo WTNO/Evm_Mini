@@ -42,6 +42,8 @@ export class Stack {
             throw new Error('stack underflow');
         }
 
+        position += 1;
+
         const temp = this._store[this._len - 1];
         this._store[this._len - 1] = this._store[this._len - position];
         this._store[this._len - position] = temp;

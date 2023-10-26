@@ -439,6 +439,8 @@ export const opCodeFunctionMap = new Map([
 
             const loadData = context.interpreter.getCallData().subarray(Number(i), Number(i) + 32)
 
+            console.log('calldata : ', bytesToHex(loadData));
+
             const l = bytesToBigInt(loadData);
 
             context.stack.push(l);
