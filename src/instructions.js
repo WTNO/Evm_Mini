@@ -424,13 +424,17 @@ export const opCodeFunctionMap = new Map([
         }
     ],
     // CALLDATALOAD 获取当前环境的输入数据
+    // 堆栈输入
+    // i: calldata中的字节偏移量。
+    // 堆栈输出
+    // data[i]: 从calldata给定偏移量开始的32字节值。在calldata结束后的所有字节都设置为0。
     [
         0x35,
         function (context) {
-            const offset = context.stack.pop();
+            const i = context.stack.pop();
         }
     ],
-    // CALLDATASIZE
+    // CALLDATASIZE 获取当前环境中输入数据的大小
     [
         0x36,
         function (context) {

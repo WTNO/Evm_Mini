@@ -11,6 +11,14 @@ var transaction = {
     value: 0n
 }
 
+var callTransaction = {
+    nonce: 1,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
+    data: "0x60fe47b1000000000000000000000000000000000000000000000000000000000000000c",
+    value: 0n
+}
+
 const WORLD_STATE = { "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5": { nonce: 1, balance: 1000000n, code: null} };
 const WORLD_STORAGE = new Storage();
 
@@ -45,6 +53,9 @@ const EVM = {
             WORLD_STORAGE.put(contractAddress);
 
             console.log("new contract created : " + contractAddress);
+        } else {
+            // 函数选择器
+            
         }
 
         console.log("world state:", WORLD_STATE);
@@ -53,4 +64,6 @@ const EVM = {
 }
 
 EVM.run(transaction);
+
+EVM.run(callTransaction);
 

@@ -9,7 +9,7 @@ export class Interpreter {
     constructor(transaction, evm) {
         this.context = {
             programCounter: 0,
-            codebyte: hexToBytes(transaction.data),
+            codebyte: transaction.to == null ? hexToBytes(transaction.data) : evm.state[transaction.to],
             memory: new Memory(),
             stack: new Stack(),
             opCode: 0xfe,
@@ -17,6 +17,8 @@ export class Interpreter {
             returnData: null,
             storage: evm.storage,
             from: transaction.from,
+            calldata: hexToBytes(transaction.data),
+            callValue: transaction.value,
         }
     }
 
@@ -29,7 +31,11 @@ export class Interpreter {
     }
 
     getCallValue() {
-        return 0n;
+        return this.context.callValue;
+    }
+
+    getCallDataSize() {
+        return this.context.calldata.length;
     }
 
     run() {
