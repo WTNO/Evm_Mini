@@ -192,7 +192,7 @@ export const opCodeFunctionMap = new Map([
         function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
-            context.stack.push(BigInt.asIntN(a) < BigInt.asIntN(b) ? BIGINT_1 : BIGINT_0);
+            context.stack.push(BigInt.asIntN(256, a) < BigInt.asIntN(256, b) ? BIGINT_1 : BIGINT_0);
         }
     ],
     // SGT 所有值都被视为二进制补码有符号的256位整数。
@@ -201,7 +201,7 @@ export const opCodeFunctionMap = new Map([
         function (context) {
             const a = context.stack.pop();
             const b = context.stack.pop();
-            context.stack.push(BigInt.asIntN(a) > BigInt.asIntN(b) ? BIGINT_1 : BIGINT_0);
+            context.stack.push(BigInt.asIntN(256, a) > BigInt.asIntN(256, b) ? BIGINT_1 : BIGINT_0);
         }
     ],
     // EQ

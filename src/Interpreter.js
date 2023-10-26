@@ -1,6 +1,7 @@
 import { hexToBytes } from "./bytes.js";
 import { opCodeFunctionMap } from "./instructions.js";
 import { Memory } from "./memory.js";
+import { opcodes } from "./opcode.js";
 import { Stack } from "./stack.js";
 import { Storage } from "./storage.js";
 
@@ -48,6 +49,8 @@ export class Interpreter {
                 const pc = this.context.programCounter;
                 const opCode = this.context.codebyte[pc];
                 this.context.opCode = opCode;
+
+                console.log(pc, " : ", opcodes[opCode]);
 
                 let opFunc;
                 // 如果为PUSH指令
