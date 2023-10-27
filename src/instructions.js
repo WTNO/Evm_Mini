@@ -1,4 +1,4 @@
-import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft } from "./bytes.js";
+import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft, padZeroOnRight } from "./bytes.js";
 import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants.js";
 import { getByteSlice, isJumpdest, mod } from "./utils.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
@@ -439,7 +439,9 @@ export const opCodeFunctionMap = new Map([
 
             const loadData = context.interpreter.getCallData().subarray(Number(i), Number(i) + 32)
 
-            const l = bytesToBigInt(loadData);
+            const l = bytesToBigInt(padZeroOnRight(loadData, 32));
+
+            console.log('loadData ', bytesToHex(bigintToBytes(l)));
 
             context.stack.push(l);
         }
@@ -680,7 +682,11 @@ export const opCodeFunctionMap = new Map([
     [
         0x54,
         function (context) {
+            const key = context.stack.pop();
 
+            const r = context.storage.get(context.to, key);
+
+            context.stack.push(r);
         }
     ],
     // SSTORE 将word保存到存储器
@@ -884,6 +890,19 @@ export const opCodeFunctionMap = new Map([
             const data = context.memory.getPtr(Number(offset), Number(size));
             context.returnData = data;
             throw new Error('STOP');
+        }
+    ],
+    // REVERT 停止执行，恢复状态更改，但返回数据和剩余的燃气。
+    // 注释:
+    // 停止当前上下文执行，恢复状态更改（参见STATICCALL以获取状态更改操作码列表）并将未使用的燃气返回给调用者。 
+    // 它也将燃气退款恢复到当前上下文之前的值。 如果使用REVERT停止执行，值0将被放在调用上下文的堆栈上，该上下文将继续正常执行。 调用上下文的返回数据被设置为此上下文的内存块。
+    // 堆栈输入:
+    // offset：内存中的字节偏移量（以字节为单位）。 调用上下文的返回数据。
+    // size：要复制的字节大小（返回数据的大小）。
+    [
+        0xfd,
+        function (context) {
+            throw new Error('REVERT');
         }
     ],
 ])
