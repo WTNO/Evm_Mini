@@ -11,11 +11,19 @@ var transaction = {
     value: 0n
 }
 
-var callTransaction = {
+var setTransaction = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
     data: "0x60fe47b1000000000000000000000000000000000000000000000000000000000000000c",
+    value: 0n
+}
+
+var getTransaction = {
+    nonce: 1,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
+    data: "0x95cacbe0",
     value: 0n
 }
 
@@ -67,5 +75,9 @@ EVM.run(transaction);
 
 console.log("\n+++++++++++++++++++++++++++++++++++++++++++++\n")
 
-EVM.run(callTransaction);
+EVM.run(setTransaction);
+
+console.log("\n+++++++++++++++++++++++++++++++++++++++++++++\n")
+
+EVM.run(getTransaction);
 
