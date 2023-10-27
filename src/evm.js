@@ -3,6 +3,24 @@ import { hexToBytes, bytesToHex } from "./bytes.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 import { Storage } from "./storage.js";
 
+/*  测试用例
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.0;
+
+    contract Simple {
+        uint256 public val1;
+        uint256 public val2;
+
+        constructor() {
+            val2 = 3;
+        }
+
+        function set(uint256 _param) external {
+            val1 = _param;
+        }
+    }
+*/
+
 var transaction = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
@@ -19,7 +37,15 @@ var setTransaction = {
     value: 0n
 }
 
-var getTransaction = {
+var getVal1Transaction = {
+    nonce: 1,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
+    data: "0xc82fdf36",
+    value: 0n
+}
+
+var getVal2Transaction = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
@@ -34,20 +60,21 @@ const EVM = {
     state: WORLD_STATE,
     storage: WORLD_STORAGE,
     run: function(transaction) {
-        const interpreter = new Interpreter(transaction, this);
+        transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
 
-        const returnData = interpreter.run();
-
-        console.log('stack:', interpreter.context.stack);
-        console.log('memory:', interpreter.context.memory);
-        console.log('returnData:', interpreter.context.returnData);
-
+        let interpreter;
         if (transaction.to === null) {
             // 计算合约地址
             const fromBytes = hexToBytes(transaction.from);
             const nonceBytes = new Uint8Array([transaction.nonce]);
             const hash = keccak256(new Uint8Array(...fromBytes, ...nonceBytes))
             var contractAddress = '0x' + bytesToHex(hash).substring(26);
+
+            transaction.to = contractAddress;
+
+            interpreter = new Interpreter(transaction, this)
+
+            const returnData = interpreter.run();
 
             // 初始化世界状态
             WORLD_STATE[contractAddress] = {
@@ -58,26 +85,36 @@ const EVM = {
 
             WORLD_STATE[transaction.from].nonce += 1
 
-            WORLD_STORAGE.put(contractAddress);
+            // WORLD_STORAGE.put(contractAddress);
 
             console.log("new contract created : " + contractAddress);
         } else {
             WORLD_STATE[transaction.from].nonce += 1
 
+            interpreter = new Interpreter(transaction, this)
+            const returnData = interpreter.run();
         }
 
+        console.log('returnData:', interpreter.context.returnData);
         console.log("world state:", WORLD_STATE);
         console.log("world storage:", WORLD_STORAGE);
     }
 }
 
+console.log("\n部署合约，初始化 val2 = 3\n")
+
 EVM.run(transaction);
 
-console.log("\n+++++++++++++++++++++++++++++++++++++++++++++\n")
+console.log("\n调用set方法，设置 val1 = 12 \n")
 
 EVM.run(setTransaction);
 
-console.log("\n+++++++++++++++++++++++++++++++++++++++++++++\n")
+console.log("\n调用get方法，获取val1的值 \n")
 
-EVM.run(getTransaction);
+EVM.run(getVal1Transaction);
+
+console.log("\n调用get方法，获取val2的值 \n")
+
+EVM.run(getVal2Transaction);
+
 
