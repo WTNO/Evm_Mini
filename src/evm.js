@@ -128,8 +128,11 @@ EVM.run(transaction);
 
 // EVM.run(getVal2Transaction);
 
+// 貌似转账功能不是通过指令实现
+// 加入fallback函数以后，如果交易数据字段的前4字节与任何函数选择器都不匹配，则程序计数器会跳转到55这里(在这个示例中)。
+// 这是后备函数：这个函数是空的，所以接下来是STOP。STOP：表示交易执行成功。
+// 现在，每个函数都需要检查交易值字段，除非该函数不可支付。
 console.log("\n转账，触发fallback \n")
-
 EVM.run(fallbackTransaction);
 
 
