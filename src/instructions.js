@@ -902,6 +902,11 @@ export const opCodeFunctionMap = new Map([
     [
         0xfd,
         function (context) {
+            const offset = context.stack.pop();
+            const size = context.stack.pop();
+
+            context.returnData = context.memory.getPtr(Number(offset), Number(size));
+
             throw new Error('REVERT');
         }
     ],
