@@ -2,6 +2,7 @@ import { Interpreter } from "./Interpreter.js";
 import { hexToBytes, bytesToHex } from "./bytes.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 import { Storage } from "./storage.js";
+import { RLP } from "@ethereumjs/rlp";
 
 /*  测试用例
     // SPDX-License-Identifier: MIT
@@ -35,7 +36,7 @@ var transaction = {
 var setTransaction = {
     nonce: 2,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
+    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
     data: "0x60fe47b1000000000000000000000000000000000000000000000000000000000000000c",
     value: 0n
 }
@@ -43,7 +44,7 @@ var setTransaction = {
 var getVal1Transaction = {
     nonce: 3,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
+    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
     data: "0xc82fdf36",
     value: 0n
 }
@@ -51,7 +52,7 @@ var getVal1Transaction = {
 var getVal2Transaction = {
     nonce: 4,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
+    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
     data: "0x95cacbe0",
     value: 0n
 }
@@ -59,7 +60,7 @@ var getVal2Transaction = {
 var fallbackTransaction = {
     nonce: 5,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xd6fa665e124d14c473efc07ff1eb0c83454b4ae9",
+    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
     data: "0x",
     value: 100n
 }
@@ -78,11 +79,12 @@ const EVM = {
             // 计算合约地址
             const fromBytes = hexToBytes(transaction.from);
             const nonceBytes = new Uint8Array([transaction.nonce]);
-            const hash = keccak256(new Uint8Array(...fromBytes, ...nonceBytes))
+            const hashBytes = RLP.encode(new Uint8Array(...fromBytes, ...nonceBytes));
+            const hash = keccak256(hashBytes);
             var contractAddress = '0x' + bytesToHex(hash).substring(26);
 
             transaction.to = contractAddress;
-
+            
             interpreter = new Interpreter(transaction, this)
 
             const returnData = interpreter.run();
@@ -116,23 +118,23 @@ console.log("\n部署合约，初始化 val2 = 3\n")
 
 EVM.run(transaction);
 
-// console.log("\n调用set方法，设置 val1 = 12 \n")
+console.log("\n调用set方法，设置 val1 = 12 \n")
 
-// EVM.run(setTransaction);
+EVM.run(setTransaction);
 
-// console.log("\n调用get方法，获取val1的值 \n")
+console.log("\n调用get方法，获取val1的值 \n")
 
-// EVM.run(getVal1Transaction);
+EVM.run(getVal1Transaction);
 
-// console.log("\n调用get方法，获取val2的值 \n")
+console.log("\n调用get方法，获取val2的值 \n")
 
-// EVM.run(getVal2Transaction);
+EVM.run(getVal2Transaction);
 
 // 貌似转账功能不是通过指令实现
 // 加入fallback函数以后，如果交易数据字段的前4字节与任何函数选择器都不匹配，则程序计数器会跳转到55这里(在这个示例中)。
 // 这是后备函数：这个函数是空的，所以接下来是STOP。STOP：表示交易执行成功。
 // 现在，每个函数都需要检查交易值字段，除非该函数不可支付。
-console.log("\n转账，触发fallback \n")
-EVM.run(fallbackTransaction);
+// console.log("\n转账，触发fallback \n")
+// EVM.run(fallbackTransaction);
 
 

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/WTNO/Evm_Mini#readme",
   "dependencies": {
+    "@ethereumjs/rlp": "^5.0.0",
     "ethereum-cryptography": "^2.1.2"
   }
 }
