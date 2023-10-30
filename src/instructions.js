@@ -292,6 +292,7 @@ export const opCodeFunctionMap = new Map([
             }
 
             const r = (value << shift) & MAX_INTEGER_BIGINT;
+            console.log("SHL", bytesToHex(bigintToBytes(r)));
             context.stack.push(r);
         }
     ],
@@ -686,7 +687,7 @@ export const opCodeFunctionMap = new Map([
 
             const r = context.storage.get(context.to, key);
 
-            context.stack.push(r);
+            context.stack.push(r === undefined ? BIGINT_0 : r);
         }
     ],
     // SSTORE 将word保存到存储器

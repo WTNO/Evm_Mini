@@ -37,7 +37,7 @@ const EVM = {
 
             WORLD_STATE[transaction.from].nonce += 1
 
-            // WORLD_STORAGE.put(contractAddress);
+            WORLD_STORAGE.put(contractAddress);
 
             console.log("new contract created : " + contractAddress);
         } else {
