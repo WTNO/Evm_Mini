@@ -4,13 +4,13 @@ import { keccak256 } from 'ethereum-cryptography/keccak.js'
 import { Storage } from "./storage.js";
 import { RLP } from "@ethereumjs/rlp";
 
-const WORLD_STATE = { "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5": { nonce: 1, balance: 1000000n, code: null} };
+const WORLD_STATE = { "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5": { nonce: 1, balance: 1000000n, code: null } };
 const WORLD_STORAGE = new Storage();
 
 const EVM = {
     state: WORLD_STATE,
     storage: WORLD_STORAGE,
-    run: function(transaction) {
+    run: function (transaction) {
         transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
 
         let interpreter;
@@ -23,7 +23,7 @@ const EVM = {
             var contractAddress = '0x' + bytesToHex(hash).substring(26);
 
             transaction.to = contractAddress;
-            
+
             interpreter = new Interpreter(transaction, this)
 
             const returnData = interpreter.run();
@@ -137,4 +137,48 @@ EVM.run(getVal2Transaction);
 // console.log("\n转账，触发fallback \n")
 EVM.run(fallbackTransaction);
 */
+
+/**
+ * // SPDX-License-Identifier: MIT
+ *  pragma solidity ^0.8.0;
+ *  
+ *  contract StorageLayout {
+ *      bytes1 private valByte;
+ *      uint256 private valUint256a;
+ *      uint32 private valUint32;
+ *      uint64 private valUint64;
+ *      address private valAddress;
+ *      uint256 private valUint256b;
+ *  
+ *      function set() external {
+ *          valByte = 0x10;
+ *          valUint256a = 0x11;
+ *          valUint32 = 0x12;
+ *          valUint64 = 0x13;
+ *          valAddress = address(0x14);
+ *          valUint256b = 0x15;
+ *      }
+ *  }
+ */
+
+var transaction = {
+    nonce: 1,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: null,
+    data: "6080604052348015600e575f80fd5b506101248061001c5f395ff3fe6080604052348015600e575f80fd5b50600436106026575f3560e01c8063b8e010de14602a575b5f80fd5b60306032565b005b601060f81b5f806101000a81548160ff021916908360f81c02179055506011600181905550601260025f6101000a81548163ffffffff021916908363ffffffff1602179055506013600260046101000a81548167ffffffffffffffff021916908367ffffffffffffffff16021790555060146002600c6101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550601560038190555056fea26469706673582212209a7be6580c5bc887f5caa4a9e37e356cf0e860f951fe1414d3c1820c610069be64736f6c63430008150033",
+    value: 0n
+}
+
+var setTransaction = {
+    nonce: 1,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: null,
+    data: "6080604052348015600e575f80fd5b50600436106026575f3560e01c8063b8e010de14602a575b5f80fd5b60306032565b005b601060f81b5f806101000a81548160ff021916908360f81c02179055506011600181905550601260025f6101000a81548163ffffffff021916908363ffffffff1602179055506013600260046101000a81548167ffffffffffffffff021916908367ffffffffffffffff16021790555060146002600c6101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550601560038190555056fea26469706673582212209a7be6580c5bc887f5caa4a9e37e356cf0e860f951fe1414d3c1820c610069be64736f6c63430008150033",
+    value: 0n
+}
+
+EVM.run(transaction);
+
+EVM.run(setTransaction);
+
 
