@@ -1,5 +1,5 @@
 import { bigintToBytes, bytesToBigInt, bytesToHex, padZeroOnLeft, padZeroOnRight } from "./bytes.js";
-import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants.js";
+import { BIGINT_0, BIGINT_1, BIGINT_255, BIGINT_256, BIGINT_2EXP256, BIGINT_31, BIGINT_32, BIGINT_7, BIGINT_8, MAX_INTEGER_BIGINT, TWO_POW256 } from "./constants.js";
 import { getByteSlice, isJumpdest, mod } from "./utils.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 

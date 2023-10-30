@@ -1,5 +1,5 @@
 import { Interpreter } from "./Interpreter.js";
-import { hexToBytes, bytesToHex } from "./bytes.js";
+import { hexToBytes, bytesToHex, bigintToBytes } from "./bytes.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 import { Storage } from "./storage.js";
 import { RLP } from "@ethereumjs/rlp";
@@ -139,26 +139,26 @@ EVM.run(fallbackTransaction);
 */
 
 /**
- * // SPDX-License-Identifier: MIT
- *  pragma solidity ^0.8.0;
- *  
- *  contract StorageLayout {
- *      bytes1 private valByte;
- *      uint256 private valUint256a;
- *      uint32 private valUint32;
- *      uint64 private valUint64;
- *      address private valAddress;
- *      uint256 private valUint256b;
- *  
- *      function set() external {
- *          valByte = 0x10;
- *          valUint256a = 0x11;
- *          valUint32 = 0x12;
- *          valUint64 = 0x13;
- *          valAddress = address(0x14);
- *          valUint256b = 0x15;
- *      }
- *  }
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract StorageLayout {
+    bytes1 private valByte;
+    uint256 private valUint256a;
+    uint32 private valUint32;
+    uint64 private valUint64;
+    address private valAddress;
+    uint256 private valUint256b;
+
+    function set() external {
+        valByte = 0x10;
+        valUint256a = 0x11;
+        valUint32 = 0x12;
+        valUint64 = 0x13;
+        valAddress = address(0x14);
+        valUint256b = 0x15;
+    }
+}
  */
 
 var transaction = {
@@ -181,4 +181,7 @@ EVM.run(transaction);
 
 EVM.run(setTransaction);
 
-
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 0n))))
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 1n))))
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 2n))))
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 3n))))
