@@ -370,8 +370,9 @@ export const opCodeFunctionMap = new Map([
             const offset = context.stack.pop();
             const size = context.stack.pop();
 
+            let data = new Uint8Array(); 
             if (size !== BIGINT_0) {
-                data = context.memory.read(Number(offset), Number(size));
+                data = context.memory.getPtr(Number(offset), Number(size));
             }
             const r = BigInt(bytesToHex(keccak256(data)));
             context.stack.push(r);
@@ -441,8 +442,6 @@ export const opCodeFunctionMap = new Map([
             const loadData = context.interpreter.getCallData().subarray(Number(i), Number(i) + 32)
 
             const l = bytesToBigInt(padZeroOnRight(loadData, 32));
-
-            console.log('loadData ', bytesToHex(bigintToBytes(l)));
 
             context.stack.push(l);
         }
