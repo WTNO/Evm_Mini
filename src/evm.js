@@ -221,8 +221,7 @@ var setBytesTransaction = {
 
 EVM.run(transaction);
 
-for (let index = 0; index < 10; index++) {
+for (let index = 0; index < 20; index++) {
     EVM.run(setBytesTransaction);
-
     console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 0n))));
 }
