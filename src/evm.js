@@ -1,5 +1,5 @@
 import { Interpreter } from "./Interpreter.js";
-import { hexToBytes, bytesToHex, bigintToBytes } from "./bytes.js";
+import { hexToBytes, bytesToHex, bigintToBytes, bytesToBigInt } from "./bytes.js";
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 import { Storage } from "./storage.js";
 import { RLP } from "@ethereumjs/rlp";
@@ -221,10 +221,13 @@ var setBytesTransaction = {
 
 EVM.run(transaction);
 
-// 当字节数超过31字节，slot存储的是长度 + 标志位1，数据位置在keccak256(slot)、keccak256(slot + 1)
+// 当字节数超过31字节，slot存储的是长度 + 标志位1，数据位置在keccak256(slot)、keccak256(slot) + 1
 for (let index = 0; index < 34; index++) {
     EVM.run(setBytesTransaction);
     console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 0n))));
 }
+var a = bytesToBigInt(keccak256(new Uint8Array(32)));
+var b = bytesToBigInt(keccak256(new Uint8Array(32))) + 1n;
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", a))));
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", b))));
 
-console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 1n))));
