@@ -63,6 +63,30 @@ export class Interpreter {
         return bytesToBigInt(hexToBytes(this.context.from));
     }
 
+    getReturnDataSize() {
+        return this.context.returnData.length;
+    }
+
+    getBlockNumber() {
+        return 1n;
+    }
+
+    getBlockGasLimit() {
+        return 100000n;
+    }
+
+    getChainId() {
+        return 50n;
+    }
+
+    getSelfBalance() {
+        return evm[this.context.to].balance;
+    }
+
+    getBlockBaseFee() {
+        return 10000n;
+    }
+
     run() {
         try {
             while (this.context.programCounter < this.context.codebyte.length) {
