@@ -383,9 +383,8 @@ export const opCodeFunctionMap = new Map([
     [
         0x30,
         function (context) {
-            // TODO
-            const address = bytesToBigInt(context.interpreter.getAddress().bytes)
-            context.stack.push(address)
+            const address = bytesToBigInt(context.interpreter.getAddress());
+            context.stack.push(address);
         }
     ],
     // BALANCE 获取给定账户的余额
@@ -393,12 +392,11 @@ export const opCodeFunctionMap = new Map([
         0x31,
         async function (context) {
             // 从stack获取地址
-            const addressBigInt = context.stack.pop()
-            // 转为address对象
-            const address = new Address(addresstoBytes(addressBigInt))
+            const addressBigInt = context.stack.pop();
+            
             // TODO
-            const balance = await context.interpreter.getExternalBalance(address)
-            context.stack.push(balance)
+            const balance = await context.interpreter.getBalance(addressBigInt);
+            context.stack.push(balance);
         }
     ],
     // ORIGIN 获取执行起始地址

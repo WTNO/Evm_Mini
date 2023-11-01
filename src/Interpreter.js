@@ -1,4 +1,4 @@
-import { hexToBytes } from "./bytes.js";
+import { bigintToBytes, bytesToBigInt, bytesToHex, hexToBytes } from "./bytes.js";
 import { opCodeFunctionMap } from "./instructions.js";
 import { Memory } from "./memory.js";
 import { opcodes } from "./opcode.js";
@@ -19,8 +19,10 @@ export class Interpreter {
             storage: evm.storage,
             from: transaction.from,
             to: transaction.to,
+            origin: transaction.origin,
             callData: hexToBytes(transaction.data),
             callValue: transaction.value,
+            evm: evm,
         }
     }
 
@@ -42,6 +44,23 @@ export class Interpreter {
 
     getCallData() {
         return this.context.callData;
+    }
+
+    getAddress() {
+        return hexToBytes(this.context.to);
+    }
+
+    getBalance(addressBigint) {
+        const address = bytesToHex(bigintToBytes(addressBigint));
+        return evm[address].balance;
+    }
+
+    getTxOrigin() {
+        return bytesToBigInt(hexToBytes(this.context.origin));
+    }
+
+    getCaller() {
+        return bytesToBigInt(hexToBytes(this.context.from));
     }
 
     run() {
