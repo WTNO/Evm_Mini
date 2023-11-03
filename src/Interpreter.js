@@ -97,6 +97,14 @@ export class Interpreter {
         return 10000n;
     }
 
+    getBlockCoinbase() {
+        return BigInt('0x50BF1e4657344267c9293d4B2aD0c8e32dC6aa29');
+    }
+
+    getBlockTimestamp() {
+        return Date.now();
+    }
+
     run() {
         try {
             while (this.context.programCounter < this.context.codebyte.length) {

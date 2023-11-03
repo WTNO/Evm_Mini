@@ -578,10 +578,23 @@ export const opCodeFunctionMap = new Map([
         }
     ],
     // BLOCKHASH 获取最近完成的256个区块之一的哈希值
+    // 堆栈输入
+    // blockNumber: 用于获取哈希值的区块号。有效范围是最后256个区块（不包括当前的区块）。可以通过NUMBER查询当前的区块号。
+    // 堆栈输出
+    // hash: 所选区块的哈希值，如果区块号不在有效范围内，哈希值为0。
     [
         0x40,
         function (context) {
+            const blockNumber = context.stack.pop();
 
+            const diff = context.interpreter.getBlockNumber - blockNumber;
+
+            if (diff > BIGINT_256 || diff <= BIGINT_0) {
+                context.stack.push(BIGINT_0);
+                return;
+            }
+
+            // TODO:应该用不到吧？
         }
     ],
     // COINBASE 获取区块的受益人地址
@@ -606,7 +619,7 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(context.interpreter.getBlockNumber());
         }
     ],
-    // DIFFICULTY
+    // DIFFICULTY/PREVRANDAO 跳过
     [
         0x44,
         function (context) {
@@ -793,18 +806,23 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(BigInt(context.programCounter - 1))
         }
     ],
-    // MSIZE
+    // MSIZE 获取活动内存的大小（以字节为单位）
+    // 内存始终是完全可访问的。这条指令跟踪的是当前执行中访问的最高偏移量。对更大偏移量的首次写入或读取将触发内存扩展，这将消耗燃料。大小始终是字（32字节）的倍数。
+    // 堆栈输出
+    // size：当前内存大小（迄今为止访问的最高偏移量+1）以字节为单位。
     [
         0x59,
         function (context) {
-
+            // TODO:没看懂怎么计算
         }
     ],
-    // GAS
+    // GAS 获取可用的燃料数量，包括此指令的成本相应的减少量。
+    // 堆栈输出
+    // gas：剩余燃料（在执行此指令后）。
     [
         0x5a,
         function (context) {
-
+            // TODO
         }
     ],
     // JUMPDEST 标记一个有效的跳转目标
