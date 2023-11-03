@@ -557,11 +557,24 @@ export const opCodeFunctionMap = new Map([
             context.memory.set(Number(destOffset), Number(size), returnData);
         }
     ],
-    // EXTCODEHASH
+    // EXTCODEHASH 获取账户代码的哈希值
+    // 堆栈输入
+    // address: 账户的20字节地址。
+    // 堆栈输出
+    // hash: 选定账户代码的哈希值，如果账户没有代码，则为空哈希（0xc5d24601...），如果账户不存在或已被销毁，则为0。
     [
         0x3f,
         function (context) {
+            const addressBigInt = context.stack.pop();
+            const address = bytesToHex(bigintToBytes(addressBigInt));
 
+            const code = context.evm.getCode(address);
+            if ( code === null || code === undefined) {
+                context.stack.push(BIGINT_0);
+                return;
+            }
+            
+            context.stack.push(bytesToBigInt(keccak256(code)));
         }
     ],
     // BLOCKHASH 获取最近完成的256个区块之一的哈希值
