@@ -394,7 +394,6 @@ export const opCodeFunctionMap = new Map([
             // 从stack获取地址
             const addressBigInt = context.stack.pop();
             
-            // TODO
             const balance = await context.interpreter.getBalance(addressBigInt);
             context.stack.push(balance);
         }
@@ -403,7 +402,6 @@ export const opCodeFunctionMap = new Map([
     [
         0x32,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getTxOrigin())
         }
     ],
@@ -411,7 +409,6 @@ export const opCodeFunctionMap = new Map([
     [
         0x33,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getCaller());
         }
     ],
@@ -419,7 +416,6 @@ export const opCodeFunctionMap = new Map([
     [
         0x34,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getCallValue());
         }
     ],
@@ -448,16 +444,24 @@ export const opCodeFunctionMap = new Map([
     [
         0x36,
         function (context) {
-            // TODO
             const r = context.interpreter.getCallDataSize()
             context.stack.push(BigInt(r))
         }
     ],
-    // CALLDATACOPY
+    // CALLDATACOPY 将当前环境中的输入数据复制到内存中。
+    // 堆栈输入
+    // destOffset：结果将复制到内存中的字节偏移量。
+    // offset：需要复制的调用数据的字节偏移量。
+    // size：需要复制的字节大小。
     [
         0x37,
         function (context) {
-
+            const destOffset = context.stack.pop();
+            const offset = context.stack.pop();
+            const size = context.stack.pop();
+            
+            callDataCopy = getByteSlice(context.callData, offset, size);
+            context.memory.set(Number(destOffset), Number(size), code);
         }
     ],
     // CODESIZE
@@ -480,7 +484,6 @@ export const opCodeFunctionMap = new Map([
             const size = context.stack.pop()
 
             // 截取code，长度不足的在后面补0
-            // TODO:getCode
             const code = getByteSlice(context.interpreter.getCode(), offset, size)
 
             // 将code写入内存
@@ -494,11 +497,18 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(context.interpreter.getTxGasPrice())
         }
     ],
-    // EXTCODESIZE
+    // EXTCODESIZE 获取账户代码的大小
+    // 堆栈输入
+    // address：要查询的合约的20字节地址。
+    // 堆栈输出
+    // size：代码的字节大小。
     [
         0x3b,
         function (context) {
+            const addressBigInt = context.stack.pop();
+            const size = BigInt(context.evm.getCode(bytesToHex(bigintToBytes(addressBigInt))).length);
 
+            context.stack.push(size);
         }
     ],
     // EXTCODECOPY
@@ -514,7 +524,6 @@ export const opCodeFunctionMap = new Map([
     [
         0x3d,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getReturnDataSize())
         }
     ],
@@ -558,7 +567,6 @@ export const opCodeFunctionMap = new Map([
     [
         0x43,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getBlockNumber());
         }
     ],
@@ -573,7 +581,6 @@ export const opCodeFunctionMap = new Map([
     [
         0x45,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getBlockGasLimit())
         }
     ],
@@ -581,7 +588,6 @@ export const opCodeFunctionMap = new Map([
     [
         0x46,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getChainId())
         }
     ],
@@ -589,33 +595,30 @@ export const opCodeFunctionMap = new Map([
     [
         0x47,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getSelfBalance())
         }
     ],
-    // BASEFEE
+    // BASEFEE 获取基础费用
     [
         0x48,
         function (context) {
-            // TODO
             context.stack.push(context.interpreter.getBlockBaseFee())
         }
     ],
     // BLOBHASH
-    [
-        0x49,
-        function (context) {
+    // [
+    //     0x49,
+    //     function (context) {
 
-        }
-    ],
+    //     }
+    // ],
     // BLOBBASEFEE
-    [
-        0x4a,
-        function (context) {
-            // TODO
-            context.stack.push(context.interpreter.getBlobBaseFee())
-        }
-    ],
+    // [
+    //     0x4a,
+    //     function (context) {
+    //         context.stack.push(context.interpreter.getBlobBaseFee())
+    //     }
+    // ],
     // POP 从堆栈中移除项目
     [
         0x50,
@@ -649,7 +652,6 @@ export const opCodeFunctionMap = new Map([
             const value = context.stack.pop();
 
             // bigint 转 Uint8Array
-            // TODO：前面需要补0
             const data = padZeroOnLeft(bigintToBytes(value), 32);
 
             context.memory.set(Number(offset), 32, data)
@@ -697,17 +699,6 @@ export const opCodeFunctionMap = new Map([
             const key = context.stack.pop();
             const value = context.stack.pop();
 
-            // 现将bigint转为uint8Array(byte)，然后补0到32位
-            // const k = padZeroOnLeft(bigintToBytes(key), 32);
-
-            // let v;
-            // if (value === BIGINT_0) {
-            //     v = Uint8Array.from([]);
-            // } else {
-            //     v = bigintToBytes(value)
-            // }
-
-            // TODO:这里是from还是创建的地址呢
             context.storage.put(context.to, key, value);
         }
     ],
@@ -724,7 +715,6 @@ export const opCodeFunctionMap = new Map([
                 throw new Error('invalid JUMP');
             }
 
-            // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
             if (!isJumpdest(context, counter)) {
                 throw new Error('JUMP ERROR')
             }
@@ -748,7 +738,6 @@ export const opCodeFunctionMap = new Map([
                     throw new Error('invalid JUMP');
                 }
 
-                // TODO:这里需要验证跳转目的地是否是JUMPDEST指令
                 if (!isJumpdest(context, Number(counter))) {
                     throw new Error('JUMP ERROR')
                 }
