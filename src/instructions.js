@@ -506,16 +506,30 @@ export const opCodeFunctionMap = new Map([
         0x3b,
         function (context) {
             const addressBigInt = context.stack.pop();
-            const size = BigInt(context.evm.getCode(bytesToHex(bigintToBytes(addressBigInt))).length);
-
+            const address = bytesToHex(bigintToBytes(addressBigInt));
+            // TODO
+            const size = BigInt(context.evm.getCode(address).length);
             context.stack.push(size);
         }
     ],
-    // EXTCODECOPY
+    // EXTCODECOPY 将帐户的代码复制到内存中。
+    // 堆栈输入
+    // address：要查询的合约的20字节地址。
+    // destOffset：结果将被复制到的内存中的字节偏移量。
+    // offset：要复制的代码的字节偏移量。
+    // size：要复制的字节大小。
     [
         0x3c,
         function (context) {
+            const addressBigInt = context.stack.pop();
+            const destOffset = context.stack.pop();
+            const offset = context.stack.pop();
+            const size = context.stack.pop();
 
+            const address = bytesToHex(bigintToBytes(addressBigInt));
+            const code = getByteSlice(context.evm.getCode(address), offset, size);
+
+            context.memory.set(Number(destOffset), Number(size), code);
         }
     ],
     // RETURNDATASIZE 获取当前环境中上一次call的输出数据大小
@@ -527,11 +541,20 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(context.interpreter.getReturnDataSize())
         }
     ],
-    // RETURNDATACOPY
+    // RETURNDATACOPY 将上一次调用的输出数据复制到内存中。
+    // 堆栈输入
+    // destOffset: 结果将被复制到内存中的字节偏移量。
+    // offset: 需要复制的上一次执行的子上下文中的返回数据的字节偏移量。
+    // size: 需要复制的字节大小。
     [
         0x3e,
         function (context) {
+            const destOffset = context.stack.pop();
+            const offset = context.stack.pop();
+            const size = context.stack.pop();
 
+            const returnData = getByteSlice(context.interpreter.getCallData(), offset, size);
+            context.memory.set(Number(destOffset), Number(size), returnData);
         }
     ],
     // EXTCODEHASH

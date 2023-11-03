@@ -63,8 +63,18 @@ export class Interpreter {
         return bytesToBigInt(hexToBytes(this.context.from));
     }
 
+    /**
+     * @returns Number
+     */
     getReturnDataSize() {
         return this.context.returnData.length;
+    }
+
+    /**
+     * @returns Uint8Array
+     */
+    getReturnData() {
+        return this.context.returnData;
     }
 
     getBlockNumber() {
