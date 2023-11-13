@@ -18,8 +18,8 @@ export function getByteSlice(bytes, offset, size) {
 
     let end = offset + size;
 
-    if (end > bytes.length) {
-        end = bytes.length;
+    if (end > len) {
+        end = len;
     }
 
     const data = padZeroOnRight(bytes.subarray(Number(offset), Number(end)), Number(size));
