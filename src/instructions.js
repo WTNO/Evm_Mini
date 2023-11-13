@@ -1015,6 +1015,44 @@ export const opCodeFunctionMap = new Map([
             throw new Error('STOP');
         }
     ],
+    // DELEGATECALL 以另一个账户的代码对此账户进行消息调用，但是保持当前的发送者和值的值不变。
+    // 创建一个新的子上下文，就像调用自身一样，但是用的是给定账户的代码。特别是存储、当前的发送者和当前的值都保持不变。注意，没有代码的账户将返回成功为真。
+    // 如果返回数据的大小未知，也可以在调用后通过RETURNDATASIZE和RETURNDATACOPY指令获取（自Byzantium分叉以来）。
+    // 从Tangerine Whistle分叉开始，所有剩余的气体都被限制在剩余气体的64分之一（remaining_gas / 64）。如果一个调用尝试发送更多，气体将被改变以匹配允许的最大量。
+    // 堆栈输入
+    // gas：发送到子上下文以执行的气体量。未被子上下文使用的气体将返回到这一个。
+    // address：要执行的账户的代码。
+    // argsOffset：内存中的字节偏移量，子上下文的调用数据。
+    // argsSize：要复制的字节大小（调用数据的大小）。
+    // retOffset：内存中的字节偏移量，存储子上下文的返回数据。
+    // retSize：要复制的字节大小（返回数据的大小）。
+    // 堆栈输出
+    // success：如果子上下文还原，则返回0，否则返回1。
+    [
+        0xf4,
+        function (context) {
+            const gas = context.stack.pop();
+            const address = context.stack.pop();
+            const argsOffset = context.stack.pop();
+            const argsSize = context.stack.pop();
+            const retOffset = context.stack.pop();
+            const retSize = context.stack.pop();
+
+            const value = context.interpreter.getCallValue();
+
+            // 获取calldata
+            let calldata = new Uint8Array(0);
+            if (argsSize != BIGINT_0) {
+                calldata = context.memory.getCopy(Number(argsOffset), Number(argsSize));
+            }
+            
+            // TODO
+            const success = context.interpreter.delegateCall(value, calldata, address);
+            // TODO 将返回数据写入内存
+
+            context.stack.push(success);
+        }
+    ],
     // REVERT 停止执行，恢复状态更改，但返回数据和剩余的燃气。
     // 注释:
     // 停止当前上下文执行，恢复状态更改（参见STATICCALL以获取状态更改操作码列表）并将未使用的燃气返回给调用者。 
