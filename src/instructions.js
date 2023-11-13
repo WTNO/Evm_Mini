@@ -1053,6 +1053,52 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(success);
         }
     ],
+    // CREATE2
+    [
+        0xf5,
+        function (context) {
+
+        }
+    ],
+    // STATICCALL
+    // 创建一个新的子上下文并执行给定帐户的代码，然后恢复当前的上下文。注意，没有代码的帐户将返回成功为真（1）。
+    // 这条指令等同于CALL，但它不允许在子上下文中修改任何状态的指令或发送ETH。被禁止的指令有CREATE、CREATE2、LOG0、LOG1、LOG2、LOG3、LOG4、SSTORE、SELFDESTRUCT和CALL（如果发送的值不是0）。
+    // 如果返回数据的大小未知，也可以在调用后用RETURNDATASIZE和RETURNDATACOPY指令获取（自Byzantium fork以来）。
+    // 从Tangerine Whistle fork开始，所有剩余的gas都被限制在当前上下文剩余gas的所有但一个64分之一（remaining_gas / 64）。如果一个调用试图发送更多，gas将被改变以匹配最大允许的值。
+    // 堆栈输入
+    // gas：发送到子上下文执行的gas数量。子上下文未使用的gas将返回到这个上下文。
+    // address：要执行的帐户的上下文。
+    // argsOffset：内存中的字节偏移量，子上下文的calldata。
+    // argsSize：要复制的字节大小（calldata的大小）。
+    // retOffset：内存中的字节偏移量，存储子上下文的返回数据的位置。
+    // retSize：要复制的字节大小（返回数据的大小）。
+    // 堆栈输出
+    // success：如果子上下文reverted，返回0，否则返回1。
+    [
+        0xfa,
+        function (context) {
+            const gas = context.stack.pop();
+            const address = context.stack.pop();
+            const argsOffset = context.stack.pop();
+            const argsSize = context.stack.pop();
+            const retOffset = context.stack.pop();
+            const retSize = context.stack.pop();
+
+            const value = BIGINT_0;
+
+            // 获取calldata
+            let calldata = new Uint8Array(0);
+            if (argsSize != BIGINT_0) {
+                calldata = context.memory.getCopy(Number(argsOffset), Number(argsSize));
+            }
+            
+            // TODO
+            const success = context.interpreter.staticCall(value, calldata, address);
+            // TODO 将返回数据写入内存
+
+            context.stack.push(success);
+        }
+    ],
     // REVERT 停止执行，恢复状态更改，但返回数据和剩余的燃气。
     // 注释:
     // 停止当前上下文执行，恢复状态更改（参见STATICCALL以获取状态更改操作码列表）并将未使用的燃气返回给调用者。 
