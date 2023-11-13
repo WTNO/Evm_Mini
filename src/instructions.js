@@ -957,7 +957,26 @@ export const opCodeFunctionMap = new Map([
     [
         0xf1,
         function (context) {
+            const gas = context.stack.pop();
+            const address = context.stack.pop();
+            const value = context.stack.pop();
+            const argsOffset = context.stack.pop();
+            const argsSize = context.stack.pop();
+            const retOffset = context.stack.pop();
+            const retSize = context.stack.pop();
+
+
+            // 获取calldata
+            let calldata = new Uint8Array(0);
+            if (argsSize != BIGINT_0) {
+                calldata = context.memory.getCopy(Number(argsOffset), Number(argsSize));
+            }
             
+            // TODO
+            const success = context.interpreter.call(value, calldata, address);
+            // TODO 将返回数据写入内存
+
+            context.stack.push(success);
         }
     ],
     // CALLCODE 用另一个账户的代码登录此账户。
