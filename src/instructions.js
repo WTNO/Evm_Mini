@@ -958,13 +958,14 @@ export const opCodeFunctionMap = new Map([
         0xf1,
         function (context) {
             const gas = context.stack.pop();
-            const address = context.stack.pop();
+            const addressBigInt = context.stack.pop();
             const value = context.stack.pop();
             const argsOffset = context.stack.pop();
             const argsSize = context.stack.pop();
             const retOffset = context.stack.pop();
             const retSize = context.stack.pop();
 
+            const address = bytesToHex(bigintToBytes(addressBigInt));
 
             // 获取calldata
             let calldata = new Uint8Array(0);
@@ -1033,11 +1034,13 @@ export const opCodeFunctionMap = new Map([
         0xf4,
         function (context) {
             const gas = context.stack.pop();
-            const address = context.stack.pop();
+            const addressBigInt = context.stack.pop();
             const argsOffset = context.stack.pop();
             const argsSize = context.stack.pop();
             const retOffset = context.stack.pop();
             const retSize = context.stack.pop();
+
+            const address = bytesToHex(bigintToBytes(addressBigInt));
 
             const value = context.interpreter.getCallValue();
 
@@ -1080,11 +1083,13 @@ export const opCodeFunctionMap = new Map([
         0xfa,
         function (context) {
             const gas = context.stack.pop();
-            const address = context.stack.pop();
+            const addressBigInt = context.stack.pop();
             const argsOffset = context.stack.pop();
             const argsSize = context.stack.pop();
             const retOffset = context.stack.pop();
             const retSize = context.stack.pop();
+
+            const address = bytesToHex(bigintToBytes(addressBigInt));
 
             const value = BIGINT_0;
 
@@ -1118,6 +1123,21 @@ export const opCodeFunctionMap = new Map([
             context.returnData = context.memory.getPtr(Number(offset), Number(size));
 
             throw new Error('REVERT');
+        }
+    ],
+    // SELFDESTRUCT 暂停执行并注册账户以便稍后删除。
+    // 当前账户被注册为待销毁，将在当前交易结束时被销毁。当前余额转移到给定账户的操作不会失败。
+    // 特别的，目标账户的代码（如果有的话）不会被执行，或者，如果账户不存在，余额仍会被添加到给定的地址。
+    // 
+    // 堆栈输入
+    // 地址：发送当前余额到的账户（参见伊斯坦布尔分叉后的BALANCE或SELFBALANCE）。
+    [
+        0xff,
+        function (context) {
+            const addressBigInt = context.stack.pop();
+            const address = bytesToHex(bigintToBytes(addressBigInt));
+
+            return context.interpreter.selfdestruct(address);
         }
     ],
 ])
