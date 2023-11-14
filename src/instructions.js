@@ -975,7 +975,7 @@ export const opCodeFunctionMap = new Map([
             
             // TODO
             const success = context.interpreter.call(value, calldata, address);
-            // TODO 将返回数据写入内存
+
             writeReturnData(context,retOffset, retSize);
 
             context.stack.push(success);
@@ -1052,7 +1052,7 @@ export const opCodeFunctionMap = new Map([
             
             // TODO
             const success = context.interpreter.delegateCall(value, calldata, address);
-            // TODO 将返回数据写入内存
+
             writeReturnData(context,retOffset, retSize);
 
             context.stack.push(success);
@@ -1101,7 +1101,7 @@ export const opCodeFunctionMap = new Map([
             
             // TODO
             const success = context.interpreter.staticCall(value, calldata, address);
-            // TODO 将返回数据写入内存
+            
             writeReturnData(context,retOffset, retSize);
 
             context.stack.push(success);

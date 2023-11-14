@@ -105,6 +105,22 @@ export class Interpreter {
         return Date.now();
     }
 
+    call(value, calldata, address) {
+
+    }
+
+    delegateCall(value, calldata, address) {
+
+    }
+
+    staticCall(value, calldata, address) {
+
+    }
+
+    _call() {
+        
+    }
+
     run() {
         try {
             while (this.context.programCounter < this.context.codebyte.length) {
