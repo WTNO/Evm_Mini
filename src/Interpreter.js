@@ -113,8 +113,12 @@ export class Interpreter {
             from: this.context.to,
             to: address,
             data: bytesToHex(calldata),
-            value: value
+            value: value,
+            codebyte: this.context.evm.state[address].code
         }
+
+        this._call(tx);
+        return 0;
     }
 
     // 用户A通过合约B来delegatecall合约C的时候，执行的是合约C的函数，
@@ -123,10 +127,14 @@ export class Interpreter {
         let tx = {
             nonce: 1,
             from: this.context.from,
-            to: address,
+            to: this.context.to,
             data: bytesToHex(calldata),
-            value: value
+            value: value,
+            codebyte: this.context.evm.state[address].code
         }
+
+        this._call(tx);
+        return 0;
     }
 
     staticCall(value, calldata, address) {
@@ -135,12 +143,19 @@ export class Interpreter {
             from: this.context.to,
             to: address,
             data: bytesToHex(calldata),
-            value: value
+            value: value,
+            codebyte: this.context.evm.state[address].code
         }
+
+        this._call(tx);
+        return 0;
     }
 
-    _call() {
-
+    _call(tx) {
+        WORLD_STATE[tx.from].nonce += 1;
+        let interpreter = new Interpreter(transaction, this);
+        const returnData = interpreter.run();
+        this.context.returnData = returnData;
     }
 
     run() {
