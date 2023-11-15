@@ -18,7 +18,7 @@ const EVM = {
             // 计算合约地址
             const fromBytes = hexToBytes(transaction.from);
             const nonceBytes = bigintToBytes(BigInt(transaction.nonce));
-            const hashBytes = RLP.encode(new Uint8Array(...fromBytes, ...nonceBytes));
+            const hashBytes = RLP.encode(new Uint8Array([...fromBytes, ...nonceBytes]));
             const hash = keccak256(hashBytes);
             var contractAddress = '0x' + bytesToHex(hash).substring(26);
 
