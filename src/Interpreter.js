@@ -167,7 +167,7 @@ export class Interpreter {
                 
                 console.log(pc, " : ", opcodes[opCode]);
 
-                // console.log(this.context.stack._store);
+                console.log(this.context.stack._store);
 
                 let opFunc;
                 // 如果为PUSH指令
