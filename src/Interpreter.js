@@ -152,7 +152,7 @@ export class Interpreter {
     }
 
     _call(tx) {
-        WORLD_STATE[tx.from].nonce += 1;
+        this.context.evm.state[tx.from].nonce += 1;
         let interpreter = new Interpreter(transaction, this);
         const returnData = interpreter.run();
         this.context.returnData = returnData;

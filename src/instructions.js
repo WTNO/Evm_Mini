@@ -823,6 +823,7 @@ export const opCodeFunctionMap = new Map([
         0x5a,
         function (context) {
             // TODO
+            context.stack.push(2516n);
         }
     ],
     // JUMPDEST 标记一个有效的跳转目标
