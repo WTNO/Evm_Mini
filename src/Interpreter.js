@@ -165,7 +165,7 @@ export class Interpreter {
                 const opCode = this.context.codebyte[pc];
                 this.context.opCode = opCode;
                 
-                // console.log(pc, " : ", opcodes[opCode]);
+                console.log(pc, " : ", opcodes[opCode]);
 
                 // console.log(this.context.stack._store);
 
