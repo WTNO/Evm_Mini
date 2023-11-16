@@ -68,6 +68,9 @@ export class Interpreter {
      * @returns Number
      */
     getReturnDataSize() {
+        if (this.context.returnData === null || this.context.returnData === undefined) {
+            return 0;
+        }
         return this.context.returnData.length;
     }
 
@@ -75,7 +78,11 @@ export class Interpreter {
      * @returns Uint8Array
      */
     getReturnData() {
-        return this.context.returnData;
+        let returnData = new Uint8Array(0);
+        if (this.context.returnData !== null && this.context.returnData !== undefined) {
+            returnData = this.context.returnData;
+        }
+        return returnData;
     }
 
     getBlockNumber() {

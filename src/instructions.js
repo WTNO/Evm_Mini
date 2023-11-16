@@ -538,7 +538,7 @@ export const opCodeFunctionMap = new Map([
     [
         0x3d,
         function (context) {
-            context.stack.push(context.interpreter.getReturnDataSize())
+            context.stack.push(BigInt(context.interpreter.getReturnDataSize()))
         }
     ],
     // RETURNDATACOPY 将上一次调用的输出数据复制到内存中。
