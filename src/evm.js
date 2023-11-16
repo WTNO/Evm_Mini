@@ -462,7 +462,7 @@ var delegatecallTx = {
     value: 0n
 }
 
-var getNumTx = {
+var getBNumTx = {
     nonce: 10002,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0x6621ccb95334f3ec1f8b6787d2569ea14c98b5e5",
@@ -470,7 +470,7 @@ var getNumTx = {
     value: 0n
 }
 
-var getSenderTx = {
+var getBSenderTx = {
     nonce: 10002,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0x6621ccb95334f3ec1f8b6787d2569ea14c98b5e5",
@@ -478,8 +478,26 @@ var getSenderTx = {
     value: 0n
 }
 
+var getCNumTx = {
+    nonce: 10002,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0x23983b78d50a8e652cd0ff1e109ef39ff6596111",
+    data: "0x4e70b1dc",
+    value: 0n
+}
+
+var getCSenderTx = {
+    nonce: 10002,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0x23983b78d50a8e652cd0ff1e109ef39ff6596111",
+    data: "0x67e404ce",
+    value: 0n
+}
+
 EVM.run(BDeploy);
 EVM.run(CDeploy);
 EVM.run(delegatecallTx);
-EVM.run(getNumTx);
-EVM.run(getSenderTx);
+EVM.run(getBNumTx);
+EVM.run(getBSenderTx);
+EVM.run(getCNumTx);
+EVM.run(getCSenderTx);
