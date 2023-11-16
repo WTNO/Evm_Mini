@@ -977,7 +977,7 @@ export const opCodeFunctionMap = new Map([
             // TODO
             const success = context.interpreter.call(value, calldata, address);
 
-            writeReturnData(context,retOffset, retSize);
+            // writeReturnData(context,retOffset, retSize);
 
             context.stack.push(success);
         }

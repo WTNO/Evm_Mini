@@ -1,4 +1,5 @@
 import { bigintToBytes, bytesToBigInt, bytesToHex, hexToBytes } from "./bytes.js";
+import { BIGINT_1 } from "./constants.js";
 import { opCodeFunctionMap } from "./instructions.js";
 import { Memory } from "./memory.js";
 import { opcodes } from "./opcode.js";
@@ -118,7 +119,7 @@ export class Interpreter {
         }
 
         this._call(tx);
-        return 0;
+        return BIGINT_1;
     }
 
     // 用户A通过合约B来delegatecall合约C的时候，执行的是合约C的函数，
