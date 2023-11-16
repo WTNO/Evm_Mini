@@ -458,10 +458,28 @@ var delegatecallTx = {
     nonce: 10002,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0x6621ccb95334f3ec1f8b6787d2569ea14c98b5e5",
-    data: "0x1c1cba57000000000000000000000000da0bab807633f07f013f94dd0e6a4f96f8742b53000000000000000000000000000000000000000000000000000000000000007b",
+    data: "0x1c1cba5700000000000000000000000023983b78d50a8e652cd0ff1e109ef39ff6596111000000000000000000000000000000000000000000000000000000000000007b",
+    value: 0n
+}
+
+var getNumTx = {
+    nonce: 10002,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0x6621ccb95334f3ec1f8b6787d2569ea14c98b5e5",
+    data: "0x4e70b1dc",
+    value: 0n
+}
+
+var getSenderTx = {
+    nonce: 10002,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0x6621ccb95334f3ec1f8b6787d2569ea14c98b5e5",
+    data: "0x67e404ce",
     value: 0n
 }
 
 EVM.run(BDeploy);
 EVM.run(CDeploy);
 EVM.run(delegatecallTx);
+EVM.run(getNumTx);
+EVM.run(getSenderTx);

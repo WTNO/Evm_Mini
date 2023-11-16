@@ -142,7 +142,7 @@ export class Interpreter {
         }
 
         this._call(tx);
-        return 0;
+        return BIGINT_1;
     }
 
     staticCall(value, calldata, address) {
