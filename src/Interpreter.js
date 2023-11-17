@@ -24,6 +24,7 @@ export class Interpreter {
             callData: hexToBytes(transaction.data),
             callValue: transaction.value,
             evm: evm,
+            nonce: transaction.nonce,
         }
     }
 
@@ -113,6 +114,33 @@ export class Interpreter {
         return Date.now();
     }
 
+    create(value, data) {
+        const caller = this.context.to;
+        evm[this.context.to].nonce += 1;
+        const nonce = evm[this.context.to].nonce;
+
+        const fromBytes = hexToBytes(caller);
+        const nonceBytes = bigintToBytes(BigInt(nonce));
+        const hashBytes = RLP.encode(new Uint8Array([...fromBytes, ...nonceBytes]));
+        const hash = keccak256(hashBytes);
+        var contractAddress = '0x' + bytesToHex(hash).substring(26);
+
+        // 初始化世界状态
+        WORLD_STATE[contractAddress] = {
+            nonce: 1,
+            balance: value,
+            code: data
+        }
+
+        WORLD_STORAGE.put(contractAddress);
+
+        return bytesToBigInt(hexToBytes(contractAddress));
+    }
+
+    create2(value, data, salt) {
+
+    }
+
     // 当用户A通过合约B来call合约C的时候，执行的是合约C的函数，
     // 语境(Context，可以理解为包含变量和状态的环境)也是合约C的：msg.sender是B的地址，并且如果函数改变一些状态变量，产生的效果会作用于合约C的变量上。
     call(value, calldata, address) {
@@ -172,7 +200,7 @@ export class Interpreter {
                 const pc = this.context.programCounter;
                 const opCode = this.context.codebyte[pc];
                 this.context.opCode = opCode;
-                
+
                 // console.log(pc, " : ", opcodes[opCode]);
 
                 // console.log(this.context.stack._store);
