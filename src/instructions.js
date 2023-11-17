@@ -1069,10 +1069,43 @@ export const opCodeFunctionMap = new Map([
             context.stack.push(success);
         }
     ],
-    // CREATE2
+    // CREATE2 创建一个与关联代码绑定的、地址可预测的新账户。
+    // 相当于CREATE指令，但是盐（salt）的使用允许新合约以一致、确定的地址被部署。
+    // 如果部署成功，账户的代码将被设置为执行初始化代码后的返回数据。
+    // 目标地址按以下方式计算：
+    // initialisation_code = memory[offset:offset+size]
+    // address = keccak256(0xff + sender_address + salt + keccak256(initialisation_code))[12:]
+    // 部署可能因以下原因失败：
+    // 目标地址上已存在合约。
+    // 转移的价值不足。
+    // 子上下文回滚。
+    // 执行初始化代码的燃气费不足。
+    // 调用深度限制达到。
+    // 请注意，这些失败只影响返回值，并不会导致调用上下文回滚（不像下面的错误情况）。
+    // 堆栈输入
+    // value：发送到新账户的价值，以wei为单位。
+    // offset：新账户初始化代码的内存中的字节偏移量。
+    // size：复制的字节大小（初始化代码的大小）。
+    // salt：用于以确定性地址创建新账户的32字节值。
+    // 堆栈输出
+    // address：已部署合约的地址，如果部署失败则为0。
     [
         0xf5,
         function (context) {
+            const value = context.stack.pop();
+            const offset = context.stack.pop();
+            const size = context.stack.pop();
+            const salt = context.stack.pop();
+
+            let data = new Uint8Array(0);
+
+            if (size != BIGINT_0) {
+                data = context.memory.getCopy(Number(offset), Number(size));
+            }
+
+            const address = context.interpreter.create2(value, data, padZeroOnLeft(bigintToBytes(salt), 32));
+
+            context.stack.push(address);
 
         }
     ],
