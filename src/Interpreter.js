@@ -1,4 +1,5 @@
-import { bigintToBytes, bytesToBigInt, bytesToHex, hexToBytes } from "./bytes.js";
+import { keccak256 } from "ethereum-cryptography/keccak.js";
+import { bigintToBytes, bytesToBigInt, bytesToHex, concatBytes, hexToBytes } from "./bytes.js";
 import { BIGINT_1 } from "./constants.js";
 import { opCodeFunctionMap } from "./instructions.js";
 import { Memory } from "./memory.js";
@@ -137,8 +138,30 @@ export class Interpreter {
         return bytesToBigInt(hexToBytes(contractAddress));
     }
 
-    create2(value, data, salt) {
+    create2(value, initCode, salt) {
+        const caller = this.context.to;
+        evm[this.context.to].nonce += 1;
 
+        // 用CREATE2创建的合约地址由4个部分决定：
+        // 0xFF：一个常数，避免和CREATE冲突
+        // 创建者地址
+        // salt（盐）：一个创建者给定的数值
+        // 待部署合约的字节码（bytecode）
+        const ffBytes = hexToBytes("0xff");
+        const fromBytes = hexToBytes(caller);
+        const hash = keccak256(concatBytes(ffBytes, fromBytes, salt, initCode));
+        var contractAddress = '0x' + bytesToHex(hash).substring(26);
+
+        // 初始化世界状态
+        WORLD_STATE[contractAddress] = {
+            nonce: 1,
+            balance: value,
+            code: data
+        }
+
+        WORLD_STORAGE.put(contractAddress);
+
+        return bytesToBigInt(hexToBytes(contractAddress));
     }
 
     // 当用户A通过合约B来call合约C的时候，执行的是合约C的函数，
