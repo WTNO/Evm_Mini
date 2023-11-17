@@ -936,6 +936,16 @@ export const opCodeFunctionMap = new Map([
             const value = context.stack.pop();
             const offset = context.stack.pop();
             const size = context.stack.pop();
+
+            let data = new Uint8Array(0);
+
+            if (size != BIGINT_0) {
+                data = context.memory.getCopy(Number(offset), Number(size));
+            }
+
+            const address = context.interpreter.create(value, data);
+
+            context.stack.push(address);
         }
     ],
     // CALL 
