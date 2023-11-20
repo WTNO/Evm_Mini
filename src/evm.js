@@ -555,6 +555,7 @@ var factoryDeploy = {
     value: 0n
 }
 
+// createPair(0x617F2E2fD72FD9D5503197092aC168c91465E7f2, 0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678)
 var createPairTx = {
     nonce: 10002,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",

@@ -126,20 +126,20 @@ export class Interpreter {
         var contractAddress = '0x' + bytesToHex(hash).substring(26);
 
         // 初始化世界状态
-        WORLD_STATE[contractAddress] = {
+        this.context.evm.state[contractAddress] = {
             nonce: 1,
             balance: value,
             code: data
         }
 
-        WORLD_STORAGE.put(contractAddress);
+        this.context.evm.storage.put(contractAddress);
 
         return bytesToBigInt(hexToBytes(contractAddress));
     }
 
     create2(value, initCode, salt) {
         const caller = this.context.to;
-        this.context.evm[this.context.to].nonce += 1;
+        this.context.evm.state[this.context.to].nonce += 1;
 
         // 用CREATE2创建的合约地址由4个部分决定：
         // 0xFF：一个常数，避免和CREATE冲突
@@ -152,13 +152,13 @@ export class Interpreter {
         var contractAddress = '0x' + bytesToHex(hash).substring(26);
 
         // 初始化世界状态
-        WORLD_STATE[contractAddress] = {
+        this.context.evm.state[contractAddress] = {
             nonce: 1,
             balance: value,
             code: data
         }
 
-        WORLD_STORAGE.put(contractAddress);
+        this.context.evm.storage.put(contractAddress);
 
         return bytesToBigInt(hexToBytes(contractAddress));
     }
