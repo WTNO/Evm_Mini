@@ -3,9 +3,8 @@ import { bigintToBytes, bytesToBigInt, bytesToHex, concatBytes, hexToBytes } fro
 import { BIGINT_1 } from "./constants.js";
 import { opCodeFunctionMap } from "./instructions.js";
 import { Memory } from "./memory.js";
-import { opcodes } from "./opcode.js";
 import { Stack } from "./stack.js";
-import { Storage } from "./storage.js";
+import { RLP } from "@ethereumjs/rlp";
 
 //  解释器
 export class Interpreter {
@@ -117,8 +116,8 @@ export class Interpreter {
 
     create(value, data) {
         const caller = this.context.to;
-        evm[this.context.to].nonce += 1;
-        const nonce = evm[this.context.to].nonce;
+        this.context.evm.state[this.context.to].nonce += 1;
+        const nonce = this.context.evm.state[this.context.to].nonce;
 
         const fromBytes = hexToBytes(caller);
         const nonceBytes = bigintToBytes(BigInt(nonce));
@@ -140,7 +139,7 @@ export class Interpreter {
 
     create2(value, initCode, salt) {
         const caller = this.context.to;
-        evm[this.context.to].nonce += 1;
+        this.context.evm[this.context.to].nonce += 1;
 
         // 用CREATE2创建的合约地址由4个部分决定：
         // 0xFF：一个常数，避免和CREATE冲突
