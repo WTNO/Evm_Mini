@@ -125,6 +125,8 @@ export class Interpreter {
         const hash = keccak256(hashBytes);
         var contractAddress = '0x' + bytesToHex(hash).substring(26);
 
+        console.log("address : ", contractAddress);
+
         // 初始化世界状态
         this.context.evm.state[contractAddress] = {
             nonce: 1,
