@@ -135,6 +135,17 @@ export class Interpreter {
             code: data
         }
 
+        let tx = {
+            nonce: nonce,
+            from: caller,
+            to: contractAddress,
+            data: data,
+            value: value,
+            codebyte: data
+        }
+
+        this._call(tx);
+
         this.context.evm.storage.put(contractAddress);
 
         return bytesToBigInt(hexToBytes(contractAddress));
