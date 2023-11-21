@@ -132,19 +132,20 @@ export class Interpreter {
         this.context.evm.state[contractAddress] = {
             nonce: 1,
             balance: value,
-            code: data
         }
 
         let tx = {
             nonce: nonce,
             from: caller,
             to: contractAddress,
-            data: data,
+            data: bytesToHex(data),
             value: value,
             codebyte: data
         }
 
         this._call(tx);
+
+        this.context.evm.state[contractAddress].code = this.context.returnData;
 
         this.context.evm.storage.put(contractAddress);
 
@@ -237,9 +238,9 @@ export class Interpreter {
                 const opCode = this.context.codebyte[pc];
                 this.context.opCode = opCode;
 
-                console.log(pc, " : ", opcodes[opCode]);
+                // console.log(pc, " : ", opcodes[opCode]);
 
-                console.log(this.context.stack._store);
+                // console.log(this.context.stack._store);
 
                 let opFunc;
                 // 如果为PUSH指令

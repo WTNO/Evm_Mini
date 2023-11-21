@@ -15,8 +15,9 @@ export class Storage {
     get(address, k) {
         let map = this._store.get(address);
 
-        if (map !== undefined || map !== null) {
+        if (map !== undefined && map !== null) {
             return map.get(k);
         }
+        return undefined;
     }
 }
