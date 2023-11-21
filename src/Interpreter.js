@@ -5,6 +5,7 @@ import { opCodeFunctionMap } from "./instructions.js";
 import { Memory } from "./memory.js";
 import { Stack } from "./stack.js";
 import { RLP } from "@ethereumjs/rlp";
+import { opcodes } from "./opcode.js";
 
 //  解释器
 export class Interpreter {
