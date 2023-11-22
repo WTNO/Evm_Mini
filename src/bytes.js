@@ -1,14 +1,14 @@
 import { BIGINT_0 } from "./constants.js";
 
 export function concatBytes(...arrs) {
-    if (arrs.length == 1) return arrs[0];
+    if (arrs.length === 1) return arrs[0];
 
     // 计算传入数组总长度
     const length = arrs.reduce((total, arr) => {
         if (!(arr instanceof Uint8Array)) {
             throw new Error('The arrs parameter must be of type Uint8Array')
         }
-        total + arr.length
+        return total + arr.length;
     }, 0);
 
     const newArr = new Uint8Array(length);

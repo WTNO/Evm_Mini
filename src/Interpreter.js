@@ -155,6 +155,7 @@ export class Interpreter {
     create2(value, initCode, salt) {
         const caller = this.context.to;
         this.context.evm.state[this.context.to].nonce += 1;
+        const nonce = this.context.evm.state[this.context.to].nonce;
 
         // 用CREATE2创建的合约地址由4个部分决定：
         // 0xFF：一个常数，避免和CREATE冲突
@@ -176,9 +177,9 @@ export class Interpreter {
             nonce: nonce,
             from: caller,
             to: contractAddress,
-            data: bytesToHex(data),
+            data: bytesToHex(initCode),
             value: value,
-            codebyte: data
+            codebyte: initCode
         }
 
         this._call(tx);
