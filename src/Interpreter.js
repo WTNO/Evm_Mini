@@ -170,8 +170,20 @@ export class Interpreter {
         this.context.evm.state[contractAddress] = {
             nonce: 1,
             balance: value,
-            code: data
         }
+
+        let tx = {
+            nonce: nonce,
+            from: caller,
+            to: contractAddress,
+            data: bytesToHex(data),
+            value: value,
+            codebyte: data
+        }
+
+        this._call(tx);
+
+        this.context.evm.state[contractAddress].code = this.context.returnData;
 
         this.context.evm.storage.put(contractAddress);
 
