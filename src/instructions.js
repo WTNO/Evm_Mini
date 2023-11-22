@@ -292,7 +292,6 @@ export const opCodeFunctionMap = new Map([
             }
 
             const r = (value << shift) & MAX_INTEGER_BIGINT;
-            console.log("SHL", bytesToHex(bigintToBytes(r)));
             context.stack.push(r);
         }
     ],

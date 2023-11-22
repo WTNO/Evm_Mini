@@ -126,7 +126,7 @@ export class Interpreter {
         const hash = keccak256(hashBytes);
         var contractAddress = '0x' + bytesToHex(hash).substring(26);
 
-        console.log("address : ", contractAddress);
+        console.log("create address : ", contractAddress);
 
         // 初始化世界状态
         this.context.evm.state[contractAddress] = {
@@ -167,7 +167,7 @@ export class Interpreter {
         const hash = keccak256(concatBytes(ffBytes, fromBytes, salt, initCode));
         var contractAddress = '0x' + bytesToHex(hash).substring(26);
 
-        console.log("address : ", contractAddress);
+        console.log("create address : ", contractAddress);
 
         // 初始化世界状态
         this.context.evm.state[contractAddress] = {

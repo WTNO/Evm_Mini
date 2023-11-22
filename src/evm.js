@@ -47,9 +47,10 @@ const EVM = {
             const returnData = interpreter.run();
         }
 
-        console.log('returnData:', interpreter.context.returnData);
+        console.log('returnData:', bytesToHex(interpreter.context.returnData));
         console.log("world state:", WORLD_STATE);
         console.log("world storage:", WORLD_STORAGE);
+        console.log("--------------------------------------------------------------------------------------------");
     },
     getCode: function(address) {
         return WORLD_STATE[address].code;
