@@ -655,6 +655,24 @@ var getPairTx = {
     value: 0n
 }
 
+var getToken0Tx = {
+    nonce: 10004,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0xf94f64a24c77e26e8cda23f48af9bb7f8fb923dc",
+    data: "0x0dfe1681",
+    value: 0n
+}
+
+var getToken1Tx = {
+    nonce: 10005,
+    from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
+    to: "0xf94f64a24c77e26e8cda23f48af9bb7f8fb923dc",
+    data: "0xd21220a7",
+    value: 0n
+}
+
 EVM.run(factoryDeploy);
 EVM.run(createPair2Tx);
 EVM.run(getPairTx);
+EVM.run(getToken0Tx);
+EVM.run(getToken1Tx);
