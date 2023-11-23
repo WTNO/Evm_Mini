@@ -921,6 +921,7 @@ export const opCodeFunctionMap = new Map([
                 mem = context.memory.read(Number(offset), Number(size));
             }
 
+            // TODO
             context.interpreter.log(mem, topicNum, topicBytes);
         }
     ],
