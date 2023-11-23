@@ -27,6 +27,7 @@ export class Interpreter {
             evm: evm,
             nonce: transaction.nonce,
             isStatic: transaction.isStatic === true ? true : false,
+            log: new Array(),
         }
     }
 
@@ -239,6 +240,24 @@ export class Interpreter {
 
         this._call(tx);
         return BIGINT_1;
+    }
+
+    log(data, topicNum, topicBytes) {
+        if (topicNum < 0 || topicNum > 4) {
+            throw new Error("out of range");
+        }
+
+        if (topicNum !== topicBytes.length) {
+            throw new Error("wrong log length");
+        }
+
+        const log = {
+            address: this.context.to,
+            topics: topicBytes,
+            data: data
+        }
+
+        this.context.log.push(log);
     }
 
     _call(tx) {

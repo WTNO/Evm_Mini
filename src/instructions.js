@@ -1021,10 +1021,17 @@ export const opCodeFunctionMap = new Map([
     // retSize：要复制的字节大小（返回数据的大小）。
     // 堆栈输出
     // success：如果子上下文撤销，返回0，否则返回1。
+    // "callcode" 已经被弃用，现在推荐使用 "delegatecall"。
     [
         0xf2,
         function (context) {
-            
+            const gas = context.stack.pop();
+            const addressBigInt = context.stack.pop();
+            const value = context.stack.pop();
+            const argsOffset = context.stack.pop();
+            const argsSize = context.stack.pop();
+            const retOffset = context.stack.pop();
+            const retSize = context.stack.pop();
         }
     ],
     // RETURN 停止执行并返回输出数据
