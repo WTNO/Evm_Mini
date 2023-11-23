@@ -54,7 +54,7 @@ const hexByByte = Array.from({ length: 256 }, (v, i) => i.toString(16).padStart(
 // Uint8Array 转 16进制字符串
 export function bytesToHex(bytes) {
     let hex = '0x'
-    if (bytes === undefined || bytes.length === 0) return hex
+    if (bytes === undefined || bytes === null || bytes.length === 0) return hex
     for (const byte of bytes) {
         hex += hexByByte[byte]
     }
