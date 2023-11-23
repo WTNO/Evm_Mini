@@ -1223,3 +1223,6 @@ function writeReturnData(context, offset, size) {
         context.memory.set(offset, size, data);
     }
 }
+
+function calMemoryWordCount(context, offset, length) {
+}
