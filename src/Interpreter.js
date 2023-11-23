@@ -26,6 +26,7 @@ export class Interpreter {
             callValue: transaction.value,
             evm: evm,
             nonce: transaction.nonce,
+            isStatic: transaction.isStatic === true ? true : false,
         }
     }
 
@@ -232,11 +233,12 @@ export class Interpreter {
             to: address,
             data: bytesToHex(calldata),
             value: value,
-            codebyte: this.context.evm.state[address].code
+            codebyte: this.context.evm.state[address].code,
+            isStatic: true
         }
 
         this._call(tx);
-        return 0;
+        return BIGINT_1;
     }
 
     _call(tx) {

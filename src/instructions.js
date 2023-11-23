@@ -744,6 +744,9 @@ export const opCodeFunctionMap = new Map([
     [
         0x55,
         function (context) {
+            if (context.isStatic) {
+                throw new Error("static state change");
+            }
             const key = context.stack.pop();
             const value = context.stack.pop();
 
@@ -893,6 +896,9 @@ export const opCodeFunctionMap = new Map([
     [
         0xa0,
         function (context) {
+            if (context.isStatic) {
+                throw new Error("static state change");
+            }
             const offset = context.stack.pop();
             const size = context.stack.pop();
 
@@ -932,6 +938,10 @@ export const opCodeFunctionMap = new Map([
     [
         0xf0,
         function (context) {
+            if (context.isStatic) {
+                throw new Error("static state change");
+            }
+
             const value = context.stack.pop();
             const offset = context.stack.pop();
             const size = context.stack.pop();
@@ -974,6 +984,10 @@ export const opCodeFunctionMap = new Map([
             const argsSize = context.stack.pop();
             const retOffset = context.stack.pop();
             const retSize = context.stack.pop();
+
+            if (context.isStatic && value !== BIGINT_0) {
+                throw new Error("static state change");
+            }
 
             const address = bytesToHex(bigintToBytes(addressBigInt));
 
@@ -1091,6 +1105,10 @@ export const opCodeFunctionMap = new Map([
     [
         0xf5,
         function (context) {
+            if (context.isStatic) {
+                throw new Error("static state change");
+            }
+
             const value = context.stack.pop();
             const offset = context.stack.pop();
             const size = context.stack.pop();
@@ -1177,6 +1195,10 @@ export const opCodeFunctionMap = new Map([
     [
         0xff,
         function (context) {
+            if (context.isStatic) {
+                throw new Error("static state change");
+            }
+            
             const addressBigInt = context.stack.pop();
             const address = bytesToHex(bigintToBytes(addressBigInt));
 
