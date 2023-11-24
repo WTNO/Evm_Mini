@@ -7,6 +7,11 @@ import { RLP } from "@ethereumjs/rlp";
 const WORLD_STATE = { "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5": { nonce: 1, balance: 1000000n, code: null } };
 const WORLD_STORAGE = new Storage();
 
+const DEBUG_ALL = 0xff;
+const DEBUG_OFF = 0x00;
+const DEBUG_STACK = 0x01;
+const DEBUG_MEMORY = 0x02;
+
 const EVM = {
     state: WORLD_STATE,
     storage: WORLD_STORAGE,
@@ -55,6 +60,12 @@ const EVM = {
     getCode: function(address) {
         return WORLD_STATE[address].code;
     },
+    step: function(debug = DEBUG_OFF) {
+
+    },
+    forward: function(debug = DEBUG_OFF, breakpoint = -1) {
+        
+    }
 }
 
 /*  测试用例
