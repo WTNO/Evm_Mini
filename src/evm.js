@@ -6,6 +6,7 @@ import { RLP } from "@ethereumjs/rlp";
 
 const WORLD_STATE = { "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5": { nonce: 1, balance: 1000000n, code: null } };
 const WORLD_STORAGE = new Storage();
+var DEBUG = 0;
 
 const EVM = {
     state: WORLD_STATE,
@@ -54,7 +55,59 @@ const EVM = {
     },
     getCode: function(address) {
         return WORLD_STATE[address].code;
-    }
+    },
+    step: function(debug = 0) {
+        DEBUG = debug;
+        var opcode = this.bytecode[this.pc];
+        var opfunc = OPCODE_FUNC[opcode] ?? null;
+        if (opfunc === null) {
+            return "opcode {" + opcode.toString(16) + "} has not been implemented yet"
+        }
+        if (DEBUG > 0) console.log("stack info: " + this.stackInfo());
+        return opfunc(this);
+    },
+    forward: function(debug = 0, breakpoint = -1) {
+        DEBUG = debug;
+
+        if (this.status !== "running" && this.status !== "paused") return { status: -1, message: "no program running" };
+
+        if (this.status === "paused") this.status = "running";
+
+        var result = { status: 0, message: "" };
+
+        while (result.status === 0) {
+            if (DEBUG > 0 && this.pc === breakpoint) {
+                this.status = "paused";
+                console.log("break point: " + breakpoint, EVM);
+                console.log("stack info: " + this.stackInfo());
+                return { status: -1, message: "paused" };
+            }
+            var opcode = this.bytecode[this.pc];
+            var opfunc = OPCODE_FUNC[opcode] ?? null;
+            if (opfunc === null) {
+                result.status = -1;
+                result.message = "opcode {" + opcode.toString(16) + "} has not been implemented yet"
+                break;
+            }
+            result = opfunc(this);
+        }
+
+        if (result.status === 1) {
+            if (this.tx.to === null) {
+                WORLD_STATE[this.address] = {
+                    nonce: 1,
+                    balance: 0,
+                    code: result.bytes,
+                    storage: {}
+                }
+                WORLD_STATE[this.tx.origin].nonce += 1
+            }
+        }
+        
+        this.status = "idle";
+
+        return result;
+    },
 }
 
 /*  测试用例
