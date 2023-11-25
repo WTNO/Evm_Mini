@@ -66,7 +66,7 @@ const EVM = {
         return WORLD_STATE[address].code;
     },
     step: function (debug = DEBUG_OFF) {
-        if (this.currentInterpreter.status !== "running" && this.currentInterpreter.status !== "paused")
+        if (this.currentInterpreter.context.status !== "running" && this.currentInterpreter.context.status !== "paused")
             return { status: -1, message: "no program running" };
 
         this.debug = debug;
@@ -94,12 +94,24 @@ const EVM = {
 
         opFunc(this.context);
     },
-    
-    forward: function (debug = DEBUG_OFF, breakpoint = -1) {
 
+    forward: function (debug = DEBUG_OFF, breakpoint = -1) {
+        if (this.currentInterpreter.context.status !== "running" && this.currentInterpreter.context.status !== "paused")
+            return { status: -1, message: "no program running" };
+
+        this.debug = debug;
+
+        if (this.currentInterpreter.context.status === "paused")
+            this.currentInterpreter.context.status = "running";
+
+        var result = { status: 0, message: "" };
+        
+        while (result.status === 0) {
+            
+        }
     },
 
-    stackInfo: function() {
+    stackInfo: function () {
         return Array.from(this.currentInterpreter.context.stack._store).reverse().reduce((str, value) => (str += bytesToHex(bigintToBytes(value)) + "\n"), "");
     }
 }
