@@ -105,9 +105,32 @@ const EVM = {
             this.currentInterpreter.context.status = "running";
 
         var result = { status: 0, message: "" };
-        
+
         while (result.status === 0) {
-            
+            if (this.debug > 0 && this.currentInterpreter.context.programCounter === breakpoint) {
+                this.status = "paused";
+                console.log("break point: " + breakpoint, EVM);
+                if ((this.debug & DEBUG_STACK) === DEBUG_STACK) console.log("stack info: \n" + this.stackInfo());
+                if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
+                return { status: -1, message: "paused" };
+            }
+
+            const opCode = this.context.codebyte[pc];
+            this.context.opCode = opCode;
+
+            let opFunc;
+            // 如果为PUSH指令
+            if (opCode >= 0x60 && opCode <= 0x7f) {
+                opFunc = opCodeFunctionMap.get(0x60);
+            } else if (opCode >= 0x80 && opCode <= 0x8f) {
+                opFunc = opCodeFunctionMap.get(0x80);
+            } else if (opCode >= 0x90 && opCode <= 0x9f) {
+                opFunc = opCodeFunctionMap.get(0x90);
+            } else {
+                opFunc = opCodeFunctionMap.get(opCode);
+            }
+
+            opFunc(this.context);
         }
     },
 
