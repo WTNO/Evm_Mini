@@ -89,10 +89,18 @@ const EVM = {
 
         this.context.programCounter++;
 
+        if ((this.debug & DEBUG_STACK) === DEBUG_STACK) console.log("stack info: \n" + this.stackInfo());
+        if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
+
         opFunc(this.context);
     },
+    
     forward: function (debug = DEBUG_OFF, breakpoint = -1) {
 
+    },
+
+    stackInfo: function() {
+        return Array.from(this.currentInterpreter.context.stack._store).reverse().reduce((str, value) => (str += bytesToHex(bigintToBytes(value)) + "\n"), "");
     }
 }
 
