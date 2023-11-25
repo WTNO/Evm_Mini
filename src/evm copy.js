@@ -29,7 +29,9 @@ const EVM = {
 
             transaction.to = contractAddress;
 
-            interpreter = new Interpreter(transaction, this)
+            interpreter = new Interpreter(transaction, this);
+
+            this.currentInterpreter = interpreter;
 
             const returnData = interpreter.run();
 
@@ -40,15 +42,18 @@ const EVM = {
                 code: returnData
             }
 
-            WORLD_STATE[transaction.from].nonce += 1
+            WORLD_STATE[transaction.from].nonce += 1;
 
             WORLD_STORAGE.put(contractAddress);
 
             console.log("new contract created : " + contractAddress);
         } else {
-            WORLD_STATE[transaction.from].nonce += 1
+            WORLD_STATE[transaction.from].nonce += 1;
 
-            interpreter = new Interpreter(transaction, this)
+            interpreter = new Interpreter(transaction, this);
+
+            this.currentInterpreter = interpreter;
+
             const returnData = interpreter.run();
         }
 
@@ -57,14 +62,19 @@ const EVM = {
         console.log("world storage:", WORLD_STORAGE);
         console.log("--------------------------------------------------------------------------------------------");
     },
-    getCode: function(address) {
+    getCode: function (address) {
         return WORLD_STATE[address].code;
     },
-    step: function(debug = DEBUG_OFF) {
+    step: function (debug = DEBUG_OFF) {
+        if (this.currentInterpreter.status !== "running" && this.currentInterpreter.status !== "paused")
+            return { status: -1, message: "no program running" };
+
+        this.debug = debug;
+
 
     },
-    forward: function(debug = DEBUG_OFF, breakpoint = -1) {
-        
+    forward: function (debug = DEBUG_OFF, breakpoint = -1) {
+
     }
 }
 
