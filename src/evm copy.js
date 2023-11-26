@@ -92,7 +92,7 @@ const EVM = {
         if ((this.debug & DEBUG_STACK) === DEBUG_STACK) console.log("stack info: \n" + this.stackInfo());
         if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
 
-        opFunc(this.context);
+        return opFunc(this.currentInterpreter.context);
     },
 
     forward: function (debug = DEBUG_OFF, breakpoint = -1) {
@@ -130,8 +130,25 @@ const EVM = {
                 opFunc = opCodeFunctionMap.get(opCode);
             }
 
-            opFunc(this.context);
+            // TODO
+            result = opFunc(this.currentInterpreter.context);
         }
+
+        if (result.status === 1) {
+            if (this.tx.to === null) {
+                this.state[this.address] = {
+                    nonce: 1,
+                    balance: 0,
+                    code: result.bytes,
+                    storage: {}
+                }
+                this.state[this.tx.origin].nonce += 1
+            }
+        }
+
+        this.status = "idle";
+
+        return result;
     },
 
     stackInfo: function () {
