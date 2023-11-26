@@ -108,15 +108,15 @@ const EVM = {
 
         while (result.status === 0) {
             if (this.debug > 0 && this.currentInterpreter.context.programCounter === breakpoint) {
-                this.status = "paused";
+                this.currentInterpreter.context.status = "paused";
                 console.log("break point: " + breakpoint, EVM);
                 if ((this.debug & DEBUG_STACK) === DEBUG_STACK) console.log("stack info: \n" + this.stackInfo());
                 if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
                 return { status: -1, message: "paused" };
             }
 
-            const opCode = this.context.codebyte[pc];
-            this.context.opCode = opCode;
+            const opCode = this.currentInterpreter.context.codebyte[pc];
+            this.currentInterpreter.context.opCode = opCode;
 
             let opFunc;
             // 如果为PUSH指令
@@ -130,10 +130,11 @@ const EVM = {
                 opFunc = opCodeFunctionMap.get(opCode);
             }
 
-            // TODO
+            // TODO 添加返回值
             result = opFunc(this.currentInterpreter.context);
         }
 
+        // TODO 初始化
         if (result.status === 1) {
             if (this.tx.to === null) {
                 this.state[this.address] = {
