@@ -139,7 +139,7 @@ const EVM = {
                 if (error.message === 'RETURNED') {
                     result = { status: 1, message: "returned"};
                 } else if (error.message === 'STOP' || error.message === 'REVERT') {
-                    result = { status: 2, message: "reverted"};
+                    result = { status: 2, message: error.message};
                 } else {
                     result = { status: 3, message: error};
                 }
@@ -159,9 +159,16 @@ const EVM = {
             }
         }
 
-        this.status = "idle";
+        this.currentInterpreter.context.status = "idle";
 
         return result;
+    },
+
+    execute: function(transaction, debug = DEBUG_OFF, breakpoint = -1) {
+        this.status = "running";
+
+        return this.forward(debug, breakpoint);
+
     },
 
     stackInfo: function () {
