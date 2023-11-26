@@ -295,11 +295,7 @@ export class Interpreter {
                 opFunc(this.context);
             }
         } catch (error) {
-            if (error.message === 'STOP') {
-                console.log('STOP');
-            } else {
-                console.log(error);
-            }
+            console.log(error);
         }
 
         return this.context.returnData;

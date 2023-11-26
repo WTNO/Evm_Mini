@@ -131,7 +131,19 @@ const EVM = {
             }
 
             // TODO 添加返回值
-            result = opFunc(this.currentInterpreter.context);
+            try {
+                opFunc(this.currentInterpreter.context);
+                result =  { status: 0, message: "" };
+
+            } catch (error) {
+                if (error.message === 'RETURNED') {
+                    result = { status: 1, message: "returned"};
+                } else if (error.message === 'STOP' || error.message === 'REVERT') {
+                    result = { status: 2, message: "reverted"};
+                } else {
+                    result = { status: 3, message: error};
+                }
+            }
         }
 
         // TODO 初始化

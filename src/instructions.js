@@ -1046,7 +1046,7 @@ export const opCodeFunctionMap = new Map([
             // 从内存获取返回数据
             const data = context.memory.getPtr(Number(offset), Number(size));
             context.returnData = data;
-            throw new Error('STOP');
+            throw new Error('RETURNED');
         }
     ],
     // DELEGATECALL 以另一个账户的代码对此账户进行消息调用，但是保持当前的发送者和值的值不变。
