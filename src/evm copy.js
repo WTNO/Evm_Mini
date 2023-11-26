@@ -15,53 +15,6 @@ const DEBUG_MEMORY = 0x02;
 const EVM = {
     state: WORLD_STATE,
     storage: WORLD_STORAGE,
-    run: function (transaction) {
-        transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
-
-        let interpreter;
-        if (transaction.to === null) {
-            // 计算合约地址
-            const fromBytes = hexToBytes(transaction.from);
-            const nonceBytes = bigintToBytes(BigInt(transaction.nonce));
-            const hashBytes = RLP.encode(new Uint8Array([...fromBytes, ...nonceBytes]));
-            const hash = keccak256(hashBytes);
-            var contractAddress = '0x' + bytesToHex(hash).substring(26);
-
-            transaction.to = contractAddress;
-
-            interpreter = new Interpreter(transaction, this);
-
-            this.currentInterpreter = interpreter;
-
-            const returnData = interpreter.run();
-
-            // 初始化世界状态
-            WORLD_STATE[contractAddress] = {
-                nonce: 1,
-                balance: 0,
-                code: returnData
-            }
-
-            WORLD_STATE[transaction.from].nonce += 1;
-
-            WORLD_STORAGE.put(contractAddress);
-
-            console.log("new contract created : " + contractAddress);
-        } else {
-            WORLD_STATE[transaction.from].nonce += 1;
-
-            interpreter = new Interpreter(transaction, this);
-
-            this.currentInterpreter = interpreter;
-
-            const returnData = interpreter.run();
-        }
-
-        console.log('returnData:', bytesToHex(interpreter.context.returnData));
-        console.log("world state:", WORLD_STATE);
-        console.log("world storage:", WORLD_STORAGE);
-        console.log("--------------------------------------------------------------------------------------------");
-    },
     getCode: function (address) {
         return WORLD_STATE[address].code;
     },
@@ -166,6 +119,44 @@ const EVM = {
 
     execute: function(transaction, debug = DEBUG_OFF, breakpoint = -1) {
         this.status = "running";
+
+        transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
+
+        let interpreter;
+        if (transaction.to === null) {
+            // 计算合约地址
+            const fromBytes = hexToBytes(transaction.from);
+            const nonceBytes = bigintToBytes(BigInt(transaction.nonce));
+            const hashBytes = RLP.encode(new Uint8Array([...fromBytes, ...nonceBytes]));
+            const hash = keccak256(hashBytes);
+            var contractAddress = '0x' + bytesToHex(hash).substring(26);
+
+            transaction.to = contractAddress;
+
+            interpreter = new Interpreter(transaction, this)
+            this.currentInterpreter = interpreter;
+
+            // const returnData = interpreter.run();
+
+            // 初始化世界状态
+            WORLD_STATE[contractAddress] = {
+                nonce: 1,
+                balance: 0,
+                code: returnData
+            }
+
+            WORLD_STATE[transaction.from].nonce += 1
+
+            WORLD_STORAGE.put(contractAddress);
+
+            console.log("new contract created : " + contractAddress);
+        } else {
+            WORLD_STATE[transaction.from].nonce += 1
+
+            interpreter = new Interpreter(transaction, this)
+            // const returnData = interpreter.run();
+            this.currentInterpreter = interpreter;
+        }
 
         return this.forward(debug, breakpoint);
 
