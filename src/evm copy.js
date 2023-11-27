@@ -91,8 +91,6 @@ const EVM = {
             // TODO 添加返回值
             try {
                 opFunc(this.currentInterpreter.context);
-                result =  { status: 0, message: "" };
-
             } catch (error) {
                 if (error.message === 'RETURNED') {
                     result = { status: 1, message: "returned"};
@@ -103,6 +101,8 @@ const EVM = {
                 }
             }
         }
+
+        result.data = this.currentInterpreter.context.returnData;
 
         // TODO 初始化
         if (result.status === 1) {
@@ -123,7 +123,7 @@ const EVM = {
     },
 
     execute: function(transaction, debug = DEBUG_OFF, breakpoint = -1) {
-        this.status = "running";
+        // this.status = "running";
 
         transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
 

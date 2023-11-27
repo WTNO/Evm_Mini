@@ -28,6 +28,7 @@ export class Interpreter {
             nonce: transaction.nonce,
             isStatic: transaction.isStatic === true ? true : false,
             log: new Array(),
+            status: 'running',
         }
     }
 
