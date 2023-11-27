@@ -21,6 +21,7 @@ export class Interpreter {
             storage: evm.storage,
             from: transaction.from,
             to: transaction.to,
+            address: transaction.to,
             origin: transaction.origin,
             callData: hexToBytes(transaction.data),
             callValue: transaction.value,

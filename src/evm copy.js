@@ -110,7 +110,7 @@ const EVM = {
 
         // TODO 初始化
         if (result.status === 1) {
-            if (this.tx.to === null) {
+            if (this.currentInterpreter.context.address === null) {
                 this.state[this.address] = {
                     nonce: 1,
                     balance: 0,
@@ -208,7 +208,7 @@ var transaction = {
 var setTransaction = {
     nonce: 2,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0x60fe47b1000000000000000000000000000000000000000000000000000000000000000c",
     value: 0n
 }
@@ -216,7 +216,7 @@ var setTransaction = {
 var getVal1Transaction = {
     nonce: 3,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0xc82fdf36",
     value: 0n
 }
@@ -224,7 +224,7 @@ var getVal1Transaction = {
 var getVal2Transaction = {
     nonce: 4,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0x95cacbe0",
     value: 0n
 }
@@ -232,18 +232,18 @@ var getVal2Transaction = {
 var fallbackTransaction = {
     nonce: 5,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0x",
     value: 100n
 }
 
-console.log("\n部署合约，初始化 val2 = 3\n")
+// console.log("\n部署合约，初始化 val2 = 3\n")
 
-EVM.execute(transaction, DEBUG_ALL);
+// EVM.execute(transaction, DEBUG_ALL);
 
 // console.log("\n调用set方法，设置 val1 = 12 \n")
 
-// EVM.run(setTransaction);
+// EVM.execute(setTransaction, DEBUG_ALL);
 
 // console.log("\n调用get方法，获取val1的值 \n")
 
