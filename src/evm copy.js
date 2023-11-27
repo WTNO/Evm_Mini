@@ -142,12 +142,13 @@ const EVM = {
             this.currentInterpreter = interpreter;
 
             // const returnData = interpreter.run();
+            const result = this.forward(debug, breakpoint);
 
             // 初始化世界状态
             WORLD_STATE[contractAddress] = {
                 nonce: 1,
                 balance: 0,
-                code: returnData
+                code: result.data,
             }
 
             WORLD_STATE[transaction.from].nonce += 1
@@ -161,10 +162,8 @@ const EVM = {
             interpreter = new Interpreter(transaction, this)
             // const returnData = interpreter.run();
             this.currentInterpreter = interpreter;
+            return this.forward(debug, breakpoint);
         }
-
-        return this.forward(debug, breakpoint);
-
     },
 
     stackInfo: function () {
@@ -236,7 +235,7 @@ var fallbackTransaction = {
 
 console.log("\n部署合约，初始化 val2 = 3\n")
 
-EVM.run(transaction);
+EVM.execute(transaction, DEBUG_ALL);
 
 // console.log("\n调用set方法，设置 val1 = 12 \n")
 
@@ -255,7 +254,7 @@ EVM.run(transaction);
 // 这是后备函数：这个函数是空的，所以接下来是STOP。STOP：表示交易执行成功。
 // 现在，每个函数都需要检查交易值字段，除非该函数不可支付。
 // console.log("\n转账，触发fallback \n")
-EVM.run(fallbackTransaction);
+// EVM.run(fallbackTransaction);
 
 
 /**
@@ -821,7 +820,7 @@ contract OtherContract {
         x = _x;
     }
 }
-*/
+
 
 var callDeploy = {
     nonce: 10000,
@@ -850,3 +849,4 @@ var callTx = {
 EVM.run(callDeploy);
 EVM.run(otherDeploy);
 EVM.run(callTx);
+*/
