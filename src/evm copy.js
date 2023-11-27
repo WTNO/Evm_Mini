@@ -3,6 +3,7 @@ import { hexToBytes, bytesToHex, bigintToBytes, bytesToBigInt } from "./bytes.js
 import { keccak256 } from 'ethereum-cryptography/keccak.js'
 import { Storage } from "./storage.js";
 import { RLP } from "@ethereumjs/rlp";
+import { opcodes } from "./opcode.js";
 
 const WORLD_STATE = { "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5": { nonce: 1, balance: 1000000n, code: null } };
 const WORLD_STORAGE = new Storage();
@@ -70,6 +71,10 @@ const EVM = {
 
             const opCode = this.currentInterpreter.context.codebyte[pc];
             this.currentInterpreter.context.opCode = opCode;
+
+            console.log(pc, " : ", opcodes[opCode]);
+
+            // console.log(this.context.stack._store);
 
             let opFunc;
             // 如果为PUSH指令
@@ -187,7 +192,7 @@ const EVM = {
     }
 */
 
-/*
+
 var transaction = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
@@ -233,17 +238,17 @@ console.log("\n部署合约，初始化 val2 = 3\n")
 
 EVM.run(transaction);
 
-console.log("\n调用set方法，设置 val1 = 12 \n")
+// console.log("\n调用set方法，设置 val1 = 12 \n")
 
-EVM.run(setTransaction);
+// EVM.run(setTransaction);
 
-console.log("\n调用get方法，获取val1的值 \n")
+// console.log("\n调用get方法，获取val1的值 \n")
 
-EVM.run(getVal1Transaction);
+// EVM.run(getVal1Transaction);
 
-console.log("\n调用get方法，获取val2的值 \n")
+// console.log("\n调用get方法，获取val2的值 \n")
 
-EVM.run(getVal2Transaction);
+// EVM.run(getVal2Transaction);
 
 // 貌似转账功能不是通过指令实现
 // 加入fallback函数以后，如果交易数据字段的前4字节与任何函数选择器都不匹配，则程序计数器会跳转到55这里(在这个示例中)。
@@ -251,7 +256,7 @@ EVM.run(getVal2Transaction);
 // 现在，每个函数都需要检查交易值字段，除非该函数不可支付。
 // console.log("\n转账，触发fallback \n")
 EVM.run(fallbackTransaction);
-*/
+
 
 /**
 // SPDX-License-Identifier: MIT
