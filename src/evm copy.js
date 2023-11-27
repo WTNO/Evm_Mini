@@ -4,6 +4,7 @@ import { keccak256 } from 'ethereum-cryptography/keccak.js'
 import { Storage } from "./storage.js";
 import { RLP } from "@ethereumjs/rlp";
 import { opcodes } from "./opcode.js";
+import { opCodeFunctionMap } from "./instructions.js";
 
 const WORLD_STATE = { "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5": { nonce: 1, balance: 1000000n, code: null } };
 const WORLD_STORAGE = new Storage();
@@ -69,6 +70,7 @@ const EVM = {
                 return { status: -1, message: "paused" };
             }
 
+            const pc = this.currentInterpreter.context.programCounter;
             const opCode = this.currentInterpreter.context.codebyte[pc];
             this.currentInterpreter.context.opCode = opCode;
 
@@ -88,16 +90,18 @@ const EVM = {
                 opFunc = opCodeFunctionMap.get(opCode);
             }
 
+            this.currentInterpreter.context.programCounter++;
+
             // TODO 添加返回值
             try {
                 opFunc(this.currentInterpreter.context);
             } catch (error) {
                 if (error.message === 'RETURNED') {
-                    result = { status: 1, message: "returned"};
+                    result = { status: 1, message: "returned" };
                 } else if (error.message === 'STOP' || error.message === 'REVERT') {
-                    result = { status: 2, message: error.message};
+                    result = { status: 2, message: error.message };
                 } else {
-                    result = { status: 3, message: error};
+                    result = { status: 3, message: error };
                 }
             }
         }
@@ -122,7 +126,7 @@ const EVM = {
         return result;
     },
 
-    execute: function(transaction, debug = DEBUG_OFF, breakpoint = -1) {
+    execute: function (transaction, debug = DEBUG_OFF, breakpoint = -1) {
         // this.status = "running";
 
         transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
