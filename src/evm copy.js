@@ -99,7 +99,7 @@ const EVM = {
                 opFunc(this.currentInterpreter.context);
             } catch (error) {
                 if (error.message === 'RETURNED') {
-                    result = { status: 1, message: "returned" };
+                    result = { status: 1, message: "returned", returnData: bytesToHex(this.currentInterpreter.context.returnData) };
                 } else if (error.message === 'STOP' || error.message === 'REVERT') {
                     result = { status: 2, message: error.message };
                 } else {
@@ -151,15 +151,15 @@ const EVM = {
             const result = this.forward(debug, breakpoint);
 
             // 初始化世界状态
+            WORLD_STORAGE.put(contractAddress);
+            WORLD_STATE[transaction.from].nonce += 1;
             WORLD_STATE[contractAddress] = {
                 nonce: 1,
                 balance: 0,
                 code: result.data,
             }
 
-            WORLD_STATE[transaction.from].nonce += 1
-
-            WORLD_STORAGE.put(contractAddress);
+            
 
             console.log("new contract created : " + contractAddress);
         } else {
@@ -247,7 +247,7 @@ console.log("\n调用set方法，设置 val1 = 12 \n")
 
 EVM.execute(setTransaction, DEBUG_ALL, 14);
 
-EVM.step(DEBUG_ALL);
+EVM.step(DEBUG_STACK);
 EVM.step(DEBUG_ALL);
 EVM.step(DEBUG_ALL);
 EVM.forward(DEBUG_ALL);
