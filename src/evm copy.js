@@ -45,7 +45,8 @@ const EVM = {
         this.context.programCounter++;
 
         if ((this.debug & DEBUG_STACK) === DEBUG_STACK) console.log("stack info: \n" + this.stackInfo());
-        if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
+        if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + this.currentInterpreter.context.memory._store);
+        // if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
 
         return opFunc(this.currentInterpreter.context);
     },
@@ -66,7 +67,8 @@ const EVM = {
                 this.currentInterpreter.context.status = "paused";
                 console.log("break point: " + breakpoint, EVM);
                 if ((this.debug & DEBUG_STACK) === DEBUG_STACK) console.log("stack info: \n" + this.stackInfo());
-                if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
+                if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n", this.currentInterpreter.context.memory._store);
+                // if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
                 return { status: -1, message: "paused" };
             }
 
@@ -243,7 +245,11 @@ EVM.execute(transaction, DEBUG_ALL);
 
 console.log("\n调用set方法，设置 val1 = 12 \n")
 
-EVM.execute(setTransaction, DEBUG_ALL);
+EVM.execute(setTransaction, DEBUG_ALL, 14);
+
+EVM.step(DEBUG_ALL);
+EVM.step(DEBUG_ALL);
+EVM.step(DEBUG_ALL);
 
 console.log("\n调用get方法，获取val1的值 \n")
 
