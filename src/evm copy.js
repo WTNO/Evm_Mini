@@ -68,7 +68,6 @@ const EVM = {
                 console.log("break point: " + breakpoint, EVM);
                 if ((this.debug & DEBUG_STACK) === DEBUG_STACK) console.log("stack info: \n" + this.stackInfo());
                 if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n", this.currentInterpreter.context.memory._store);
-                // if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
                 return { status: -1, message: "paused" };
             }
 
@@ -76,7 +75,7 @@ const EVM = {
             const opCode = this.currentInterpreter.context.codebyte[pc];
             this.currentInterpreter.context.opCode = opCode;
 
-            console.log(pc, " : ", opcodes[opCode]);
+            // console.log(pc, " : ", opcodes[opCode]);
 
             // console.log(this.context.stack._store);
 
@@ -159,9 +158,8 @@ const EVM = {
                 code: result.data,
             }
 
-            
-
             console.log("new contract created : " + contractAddress);
+            return result;
         } else {
             WORLD_STATE[transaction.from].nonce += 1
 
@@ -241,25 +239,25 @@ var fallbackTransaction = {
 
 console.log("\n部署合约，初始化 val2 = 3\n")
 
-EVM.execute(transaction, DEBUG_ALL);
+console.log(EVM.execute(transaction, DEBUG_ALL));
 
 console.log("\n调用set方法，设置 val1 = 12 \n")
 
-EVM.execute(setTransaction, DEBUG_ALL, 14);
+console.log(EVM.execute(setTransaction, DEBUG_ALL, 14));
 
-EVM.step(DEBUG_STACK);
-EVM.step(DEBUG_ALL);
-EVM.step(DEBUG_ALL);
-EVM.forward(DEBUG_ALL);
+console.log(EVM.step(DEBUG_STACK));
+console.log(EVM.step(DEBUG_ALL));
+console.log(EVM.step(DEBUG_ALL));
+console.log(EVM.forward(DEBUG_ALL));
 
 
 console.log("\n调用get方法，获取val1的值 \n")
 
-EVM.execute(getVal1Transaction, DEBUG_ALL);
+console.log(EVM.execute(getVal1Transaction, DEBUG_ALL));
 
 console.log("\n调用get方法，获取val2的值 \n")
 
-EVM.execute(getVal2Transaction);
+console.log(EVM.execute(getVal2Transaction));
 
 console.log("")
 
