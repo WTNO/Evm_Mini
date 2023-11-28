@@ -237,21 +237,23 @@ var fallbackTransaction = {
     value: 100n
 }
 
-// console.log("\n部署合约，初始化 val2 = 3\n")
+console.log("\n部署合约，初始化 val2 = 3\n")
 
-// EVM.execute(transaction, DEBUG_ALL);
+EVM.execute(transaction, DEBUG_ALL);
 
-// console.log("\n调用set方法，设置 val1 = 12 \n")
+console.log("\n调用set方法，设置 val1 = 12 \n")
 
-// EVM.execute(setTransaction, DEBUG_ALL);
+EVM.execute(setTransaction, DEBUG_ALL);
 
-// console.log("\n调用get方法，获取val1的值 \n")
+console.log("\n调用get方法，获取val1的值 \n")
 
-// EVM.run(getVal1Transaction);
+EVM.execute(getVal1Transaction, DEBUG_ALL);
 
-// console.log("\n调用get方法，获取val2的值 \n")
+console.log("\n调用get方法，获取val2的值 \n")
 
-// EVM.run(getVal2Transaction);
+EVM.execute(getVal2Transaction);
+
+console.log("")
 
 // 貌似转账功能不是通过指令实现
 // 加入fallback函数以后，如果交易数据字段的前4字节与任何函数选择器都不匹配，则程序计数器会跳转到55这里(在这个示例中)。
