@@ -27,8 +27,8 @@ const EVM = {
         this.debug = debug;
 
         const pc = this.currentInterpreter.context.programCounter;
-        const opCode = this.context.codebyte[pc];
-        this.context.opCode = opCode;
+        const opCode = this.currentInterpreter.context.codebyte[pc];
+        this.currentInterpreter.context.opCode = opCode;
 
         let opFunc;
         // 如果为PUSH指令
@@ -42,10 +42,10 @@ const EVM = {
             opFunc = opCodeFunctionMap.get(opCode);
         }
 
-        this.context.programCounter++;
+        this.currentInterpreter.context.programCounter++;
 
         if ((this.debug & DEBUG_STACK) === DEBUG_STACK) console.log("stack info: \n" + this.stackInfo());
-        if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + this.currentInterpreter.context.memory._store);
+        if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n", this.currentInterpreter.context.memory._store);
         // if ((this.debug & DEBUG_MEMORY) === DEBUG_MEMORY) console.log("memory info: \n" + bytesToHex(this.currentInterpreter.context.memory._store));
 
         return opFunc(this.currentInterpreter.context);
@@ -250,6 +250,8 @@ EVM.execute(setTransaction, DEBUG_ALL, 14);
 EVM.step(DEBUG_ALL);
 EVM.step(DEBUG_ALL);
 EVM.step(DEBUG_ALL);
+EVM.forward(DEBUG_ALL);
+
 
 console.log("\n调用get方法，获取val1的值 \n")
 
