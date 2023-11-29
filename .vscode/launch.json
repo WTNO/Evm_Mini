@@ -13,8 +13,8 @@
                 "<node_internals>/**"
             ],
             // "program": "${workspaceFolder}\\src\\evm_mini.js"
-            "program": "${workspaceFolder}\\src\\evm.js"
-            // "program": "${workspaceFolder}\\src\\evm copy.js"
+            // "program": "${workspaceFolder}\\src\\evm.js"
+            "program": "${workspaceFolder}\\src\\evm copy.js"
         }
     ]
 }

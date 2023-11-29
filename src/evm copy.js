@@ -98,11 +98,13 @@ const EVM = {
                 opFunc(this.currentInterpreter.context);
             } catch (error) {
                 if (error.message === 'RETURNED') {
-                    result = { status: 1, message: "returned", returnData: bytesToHex(this.currentInterpreter.context.returnData) };
-                } else if (error.message === 'STOP' || error.message === 'REVERT') {
-                    result = { status: 2, message: error.message };
+                    result = { status: 1, message: "RETURNED", returnData: bytesToHex(this.currentInterpreter.context.returnData) };
+                } else if (error.message === 'STOP') {
+                    result = { status: 2, message: '无返回值' };
+                } else if (error.message === 'REVERT') {
+                    result = { status: 3, message: error.message };
                 } else {
-                    result = { status: 3, message: error };
+                    result = { status: 4, message: error };
                 }
             }
         }
@@ -378,7 +380,7 @@ contract StorageArrays {
         arrayByte[_ofs] = _val;
     }
 }
-*/
+
 
 // 动态数组的值存储在以下位置：storage[keccak256(slot)+key] = value
 // 动态数组中的元素数量存储在 storage[slot]
@@ -412,7 +414,7 @@ EVM.execute(setByteArrayValTx, DEBUG_ALL);
 
 console.log(EVM.storage);
 console.log();
-
+*/
 
 /*
 // SPDX-License-Identifier: MIT
@@ -425,7 +427,7 @@ contract StorageMappings {
         map[_key] = _val;
     }
 }
-
+*/
 
 var transaction = {
     nonce: 1,
@@ -451,16 +453,16 @@ var getMapValTx = {
     value: 0n
 }
 
-EVM.run(transaction);
-EVM.run(setMapValTx);
-EVM.run(getMapValTx);
+console.log(EVM.execute(transaction));
+console.log(EVM.execute(setMapValTx));
+console.log(EVM.execute(getMapValTx));
 
 // Mappings的存储
 // storage[keccak256(key . storage slot number)] = value
 const arr = new Uint8Array(64);
 arr[31] = 111;
 console.log(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", bytesToBigInt(keccak256(arr))));
-*/
+
 
 /*
 // SPDX-License-Identifier: MIT
