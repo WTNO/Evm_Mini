@@ -75,8 +75,7 @@ const EVM = {
             const opCode = this.currentInterpreter.context.codebyte[pc];
             this.currentInterpreter.context.opCode = opCode;
 
-            console.log(pc, " : ", opcodes[opCode]);
-
+            // console.log(pc, " : ", opcodes[opCode]);
             // console.log(this.context.stack._store);
 
             let opFunc;
@@ -427,7 +426,7 @@ contract StorageMappings {
         map[_key] = _val;
     }
 }
-*/
+
 
 var transaction = {
     nonce: 1,
@@ -462,7 +461,7 @@ console.log(EVM.execute(getMapValTx));
 const arr = new Uint8Array(64);
 arr[31] = 111;
 console.log(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", bytesToBigInt(keccak256(arr))));
-
+*/
 
 /*
 // SPDX-License-Identifier: MIT
@@ -491,7 +490,7 @@ contract OtherContract {
         x = _x;
     }
 }
-
+*/
 
 var callDeploy = {
     nonce: 10000,
@@ -525,11 +524,11 @@ var getTx = {
     value: 0n
 }
 
-EVM.run(callDeploy);
-EVM.run(otherDeploy);
-EVM.run(callTx);
-EVM.run(getTx);
-*/
+console.log(EVM.execute(callDeploy, DEBUG_ALL));
+console.log(EVM.execute(otherDeploy, DEBUG_ALL));
+console.log(EVM.execute(callTx, DEBUG_ALL));
+console.log(EVM.execute(getTx, DEBUG_ALL));
+
 
 /**
 // SPDX-License-Identifier: MIT

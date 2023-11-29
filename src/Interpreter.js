@@ -206,7 +206,8 @@ export class Interpreter {
             to: address,
             data: bytesToHex(calldata),
             value: value,
-            codebyte: this.context.evm.state[address].code
+            codebyte: this.context.evm.state[address].code,
+            evm: this.context.evm
         }
 
         this._call(tx);
@@ -263,10 +264,18 @@ export class Interpreter {
     }
 
     _call(tx) {
+        console.log("-----------------------call begin-----------------------");
         this.context.evm.state[tx.from].nonce += 1;
-        let interpreter = new Interpreter(tx, this.context.evm);
-        const returnData = interpreter.run();
-        this.context.returnData = returnData;
+
+        // let interpreter = new Interpreter(tx, this.context.evm);
+        // const returnData = interpreter.run();
+
+        const result = this.context.evm.execute(tx);
+        result.isCall = true;
+        console.log(result);
+
+        this.context.returnData = result.data;
+        console.log("-----------------------call end-----------------------");
     }
 
     run() {
@@ -276,7 +285,7 @@ export class Interpreter {
                 const opCode = this.context.codebyte[pc];
                 this.context.opCode = opCode;
 
-                console.log(pc, " : ", opcodes[opCode]);
+                // console.log(pc, " : ", opcodes[opCode]);
 
                 // console.log(this.context.stack._store);
 
