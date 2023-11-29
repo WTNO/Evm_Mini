@@ -193,7 +193,7 @@ const EVM = {
 
         fallback() external payable {}
     }
-*/
+
 
 
 var transaction = {
@@ -260,6 +260,7 @@ console.log("\n调用get方法，获取val2的值 \n")
 console.log(EVM.execute(getVal2Transaction));
 
 console.log("")
+*/
 
 // 貌似转账功能不是通过指令实现
 // 加入fallback函数以后，如果交易数据字段的前4字节与任何函数选择器都不匹配，则程序计数器会跳转到55这里(在这个示例中)。
@@ -267,7 +268,6 @@ console.log("")
 // 现在，每个函数都需要检查交易值字段，除非该函数不可支付。
 // console.log("\n转账，触发fallback \n")
 // EVM.run(fallbackTransaction);
-
 
 /**
 // SPDX-License-Identifier: MIT
@@ -290,7 +290,7 @@ contract StorageLayout {
         valUint256b = 0x15;
     }
 }
-
+*/
 
 var transaction = {
     nonce: 1,
@@ -303,20 +303,20 @@ var transaction = {
 var setTransaction = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0xb8e010de",
     value: 0n
 }
 
-EVM.run(transaction);
+EVM.execute(transaction, DEBUG_ALL);
 
-EVM.run(setTransaction);
+EVM.execute(setTransaction, DEBUG_ALL);
 
-console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 0n))))
-console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 1n))))
-console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 2n))))
-console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 3n))))
-*/
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 0n))))
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 1n))))
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 2n))))
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 3n))))
+
 
 /*
 
