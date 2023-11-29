@@ -75,7 +75,7 @@ const EVM = {
             const opCode = this.currentInterpreter.context.codebyte[pc];
             this.currentInterpreter.context.opCode = opCode;
 
-            // console.log(pc, " : ", opcodes[opCode]);
+            console.log(pc, " : ", opcodes[opCode]);
 
             // console.log(this.context.stack._store);
 
@@ -330,7 +330,7 @@ contract StorageBytes {
         valBytes.push(_val);
     }
 }
-*/
+
 
 
 var transaction = {
@@ -349,18 +349,18 @@ var setBytesTransaction = {
     value: 0n
 }
 
-EVM.execute(transaction);
+EVM.execute(transaction, DEBUG_ALL);
 
 // 当字节数超过31字节，slot存储的是长度 + 标志位1，数据位置在keccak256(slot)、keccak256(slot) + 1
 for (let index = 0; index < 34; index++) {
-    EVM.execute(setBytesTransaction);
+    EVM.execute(setBytesTransaction, DEBUG_ALL);
     console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 0n))));
 }
 var a = bytesToBigInt(keccak256(new Uint8Array(32)));
 var b = bytesToBigInt(keccak256(new Uint8Array(32))) + 1n;
 console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", a))));
 console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", b))));
-
+*/
 
 /*
 // SPDX-License-Identifier: MIT
@@ -378,7 +378,7 @@ contract StorageArrays {
         arrayByte[_ofs] = _val;
     }
 }
-
+*/
 
 // 动态数组的值存储在以下位置：storage[keccak256(slot)+key] = value
 // 动态数组中的元素数量存储在 storage[slot]
@@ -406,10 +406,13 @@ var setByteArrayValTx = {
     value: 0n
 }
 
-EVM.run(transaction);
-EVM.run(setUint256ArrayValTx);
-EVM.run(setByteArrayValTx);
-*/
+EVM.execute(transaction, DEBUG_ALL);
+EVM.execute(setUint256ArrayValTx, DEBUG_ALL);
+EVM.execute(setByteArrayValTx, DEBUG_ALL);
+
+console.log(EVM.storage);
+console.log();
+
 
 /*
 // SPDX-License-Identifier: MIT

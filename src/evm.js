@@ -253,7 +253,7 @@ contract StorageArrays {
     }
 }
 
-
+*/
 // 动态数组的值存储在以下位置：storage[keccak256(slot)+key] = value
 // 动态数组中的元素数量存储在 storage[slot]
 var transaction = {
@@ -267,7 +267,7 @@ var transaction = {
 var setUint256ArrayValTx = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0xda1e128e000000000000000000000000000000000000000000000000000000000000006f0000000000000000000000000000000000000000000000000000000000002af8",
     value: 0n
 }
@@ -275,7 +275,7 @@ var setUint256ArrayValTx = {
 var setByteArrayValTx = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0x778b589200000000000000000000000000000000000000000000000000000000000003e8e100000000000000000000000000000000000000000000000000000000000000",
     value: 0n
 }
@@ -283,7 +283,7 @@ var setByteArrayValTx = {
 EVM.run(transaction);
 EVM.run(setUint256ArrayValTx);
 EVM.run(setByteArrayValTx);
-*/
+
 
 /*
 // SPDX-License-Identifier: MIT
@@ -706,7 +706,7 @@ contract OtherContract {
         x = _x;
     }
 }
-*/
+
 
 var callDeploy = {
     nonce: 10000,
@@ -735,3 +735,4 @@ var callTx = {
 EVM.run(callDeploy);
 EVM.run(otherDeploy);
 EVM.run(callTx);
+*/
