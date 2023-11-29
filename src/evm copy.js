@@ -290,7 +290,7 @@ contract StorageLayout {
         valUint256b = 0x15;
     }
 }
-*/
+
 
 var transaction = {
     nonce: 1,
@@ -316,7 +316,7 @@ console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af
 console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 1n))))
 console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 2n))))
 console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 3n))))
-
+*/
 
 /*
 
@@ -330,7 +330,7 @@ contract StorageBytes {
         valBytes.push(_val);
     }
 }
-
+*/
 
 
 var transaction = {
@@ -344,23 +344,23 @@ var transaction = {
 var setBytesTransaction = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0xe4e38de3aa00000000000000000000000000000000000000000000000000000000000000",
     value: 0n
 }
 
-EVM.run(transaction);
+EVM.execute(transaction);
 
 // 当字节数超过31字节，slot存储的是长度 + 标志位1，数据位置在keccak256(slot)、keccak256(slot) + 1
 for (let index = 0; index < 34; index++) {
-    EVM.run(setBytesTransaction);
-    console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", 0n))));
+    EVM.execute(setBytesTransaction);
+    console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", 0n))));
 }
 var a = bytesToBigInt(keccak256(new Uint8Array(32)));
 var b = bytesToBigInt(keccak256(new Uint8Array(32))) + 1n;
-console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", a))));
-console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", b))));
-*/
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", a))));
+console.log(bytesToHex(bigintToBytes(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", b))));
+
 
 /*
 // SPDX-License-Identifier: MIT
@@ -393,7 +393,7 @@ var transaction = {
 var setUint256ArrayValTx = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0xda1e128e000000000000000000000000000000000000000000000000000000000000006f0000000000000000000000000000000000000000000000000000000000002af8",
     value: 0n
 }
@@ -401,7 +401,7 @@ var setUint256ArrayValTx = {
 var setByteArrayValTx = {
     nonce: 1,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0x778b589200000000000000000000000000000000000000000000000000000000000003e8e100000000000000000000000000000000000000000000000000000000000000",
     value: 0n
 }
@@ -435,7 +435,7 @@ var transaction = {
 var setMapValTx = {
     nonce: 2,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0x4dcb6e68000000000000000000000000000000000000000000000000000000000000006f0000000000000000000000000000000000000000000000000000000000002af8",// 111:11000
     value: 0n
 }
@@ -443,7 +443,7 @@ var setMapValTx = {
 var getMapValTx = {
     nonce: 2,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
-    to: "0xe412d2cb0138712d98899fa070f976b14103b4a1",
+    to: "0x80cc7c6d638660b0f715af94ed2e88eae37c09c3",
     data: "0xb8dda9c7000000000000000000000000000000000000000000000000000000000000006f",// 111
     value: 0n
 }
@@ -456,7 +456,7 @@ EVM.run(getMapValTx);
 // storage[keccak256(key . storage slot number)] = value
 const arr = new Uint8Array(64);
 arr[31] = 111;
-console.log(WORLD_STORAGE.get("0xe412d2cb0138712d98899fa070f976b14103b4a1", bytesToBigInt(keccak256(arr))));
+console.log(WORLD_STORAGE.get("0x80cc7c6d638660b0f715af94ed2e88eae37c09c3", bytesToBigInt(keccak256(arr))));
 */
 
 /*
