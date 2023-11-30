@@ -437,7 +437,6 @@ contract B {
         );
     }
 }
-*/
 
 var BDeploy = {
     nonce: 10000,
@@ -502,6 +501,7 @@ EVM.run(getBNumTx);
 EVM.run(getBSenderTx);
 EVM.run(getCNumTx);
 EVM.run(getCSenderTx);
+*/
 
 
 /**
@@ -546,6 +546,7 @@ contract PairFactory{
         getPair[tokenB][tokenA] = pairAddr;
     }
 }
+*/
 
 
 var factoryDeploy = {
@@ -595,7 +596,6 @@ EVM.run(createPairTx);
 EVM.run(getPairTx);
 EVM.run(getToken0Tx);
 EVM.run(getToken1Tx);
-*/
 
 /**
 // SPDX-License-Identifier: MIT

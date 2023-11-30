@@ -105,6 +105,7 @@ const EVM = {
                 } else if (error.message === 'REVERT') {
                     result = { status: 3, message: error.message };
                 } else {
+                    console.log(error);
                     result = { status: 4, message: error };
                 }
             }
@@ -133,7 +134,7 @@ const EVM = {
     execute: function (transaction, debug = DEBUG_OFF, breakpoint = -1) {
         // this.status = "running";
 
-        if (!transaction.isDelegateCall) {
+        if (!transaction.isDelegateCall && !transaction.isCreate) {
             transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
         }
 
@@ -582,7 +583,7 @@ contract B {
         );
     }
 }
-*/
+
 
 var BDeploy = {
     nonce: 10000,
@@ -648,6 +649,7 @@ console.log(EVM.execute(getBSenderTx));
 console.log(EVM.execute(getCNumTx));
 console.log(EVM.execute(getCSenderTx));
 console.log();
+*/
 
 /**
 // SPDX-License-Identifier: MIT
@@ -692,7 +694,6 @@ contract PairFactory{
     }
 }
 
-
 var factoryDeploy = {
     nonce: 10000,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
@@ -735,11 +736,11 @@ var getToken1Tx = {
     value: 0n
 }
 
-EVM.run(factoryDeploy);
-EVM.run(createPairTx);
-EVM.run(getPairTx);
-EVM.run(getToken0Tx);
-EVM.run(getToken1Tx);
+console.log(EVM.execute(factoryDeploy));
+console.log(EVM.execute(createPairTx));
+console.log(bytesToHex(EVM.execute(getPairTx).data));
+console.log(bytesToHex(EVM.execute(getToken0Tx).data));
+console.log(bytesToHex(EVM.execute(getToken1Tx).data));
 */
 
 /**
@@ -773,6 +774,7 @@ contract PairFactory2 {
         getPair[tokenB][tokenA] = pairAddr;
     }
 }
+*/
 
 
 var factoryDeploy = {
@@ -817,12 +819,11 @@ var getToken1Tx = {
     value: 0n
 }
 
-EVM.run(factoryDeploy);
-EVM.run(createPair2Tx);
-EVM.run(getPairTx);
-EVM.run(getToken0Tx);
-EVM.run(getToken1Tx);
-*/
+console.log(EVM.execute(factoryDeploy));
+console.log(EVM.execute(createPair2Tx));
+console.log(bytesToHex(EVM.execute(getPairTx).data));
+console.log(bytesToHex(EVM.execute(getToken0Tx).data));
+console.log(bytesToHex(EVM.execute(getToken1Tx).data));
 
 /**
 // SPDX-License-Identifier: MIT

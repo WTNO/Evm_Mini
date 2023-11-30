@@ -144,7 +144,8 @@ export class Interpreter {
             to: contractAddress,
             data: bytesToHex(data),
             value: value,
-            codebyte: data
+            codebyte: data,
+            isCreate: true
         }
 
         this._call(tx);
@@ -185,7 +186,8 @@ export class Interpreter {
             to: contractAddress,
             data: bytesToHex(initCode),
             value: value,
-            codebyte: initCode
+            codebyte: initCode,
+            isCreate: true
         }
 
         this._call(tx);
@@ -271,6 +273,7 @@ export class Interpreter {
 
         // let interpreter = new Interpreter(tx, this.context.evm);
         // const returnData = interpreter.run();
+        // this.context.returnData = returnData;
 
         // 保存当前上下文
         const tempInterpreter = this.context.evm.currentInterpreter;
@@ -278,8 +281,8 @@ export class Interpreter {
         this.context.evm.currentInterpreter = tempInterpreter;
         result.isCall = true;
         console.log(result);
-
         this.context.returnData = result.data;
+        
         console.log("-----------------------call end-----------------------");
     }
 
@@ -292,7 +295,7 @@ export class Interpreter {
 
                 console.log(pc, " : ", opcodes[opCode]);
 
-                console.log(this.context.stack._store);
+                // console.log(this.context.stack._store);
 
                 let opFunc;
                 // 如果为PUSH指令
