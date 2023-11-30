@@ -97,7 +97,7 @@ const EVM = {
                 opFunc(this.currentInterpreter.context);
             } catch (error) {
                 if (error.message === 'RETURNED') {
-                    result = { status: 1, message: "RETURNED", returnData: bytesToHex(this.currentInterpreter.context.returnData) };
+                    result = { status: 1, message: "RETURNED"};
                 } else if (error.message === 'STOP') {
                     result = { status: 2, message: '无返回值' };
                 } else if (error.message === 'REVERT') {
