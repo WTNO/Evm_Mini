@@ -77,7 +77,7 @@ const EVM = {
             const opCode = this.currentInterpreter.context.codebyte[pc];
             this.currentInterpreter.context.opCode = opCode;
 
-            console.log(pc, " : ", opcodes[opCode]);
+            // console.log(pc, " : ", opcodes[opCode]);
             // console.log(this.context.stack._store);
 
             let opFunc;
@@ -492,7 +492,7 @@ contract OtherContract {
         x = _x;
     }
 }
-*/
+
 
 var callDeploy = {
     nonce: 10000,
@@ -541,7 +541,7 @@ console.log(EVM.step(DEBUG_OFF));
 console.log(EVM.step(DEBUG_OFF));
 console.log(EVM.forward(DEBUG_OFF));
 console.log();
-
+*/
 
 /**
 // SPDX-License-Identifier: MIT
@@ -580,7 +580,7 @@ contract B {
         );
     }
 }
-
+*/
 
 var BDeploy = {
     nonce: 10000,
@@ -607,7 +607,7 @@ var delegatecallTx = {
 }
 
 var getBNumTx = {
-    nonce: 10002,
+    nonce: 10003,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0x6621ccb95334f3ec1f8b6787d2569ea14c98b5e5",
     data: "0x4e70b1dc",
@@ -615,7 +615,7 @@ var getBNumTx = {
 }
 
 var getBSenderTx = {
-    nonce: 10002,
+    nonce: 10004,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0x6621ccb95334f3ec1f8b6787d2569ea14c98b5e5",
     data: "0x67e404ce",
@@ -638,14 +638,14 @@ var getCSenderTx = {
     value: 0n
 }
 
-EVM.run(BDeploy);
-EVM.run(CDeploy);
-EVM.run(delegatecallTx);
-EVM.run(getBNumTx);
-EVM.run(getBSenderTx);
-EVM.run(getCNumTx);
-EVM.run(getCSenderTx);
-*/
+console.log(EVM.execute(BDeploy));
+console.log(EVM.execute(CDeploy));
+console.log(EVM.execute(delegatecallTx));
+console.log(EVM.execute(getBNumTx));
+console.log(EVM.execute(getBSenderTx));
+console.log(EVM.execute(getCNumTx));
+console.log(EVM.execute(getCSenderTx));
+console.log();
 
 /**
 // SPDX-License-Identifier: MIT
