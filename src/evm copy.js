@@ -75,7 +75,7 @@ const EVM = {
             const opCode = this.currentInterpreter.context.codebyte[pc];
             this.currentInterpreter.context.opCode = opCode;
 
-            // console.log(pc, " : ", opcodes[opCode]);
+            console.log(pc, " : ", opcodes[opCode]);
             // console.log(this.context.stack._store);
 
             let opFunc;
@@ -526,7 +526,13 @@ var getTx = {
 
 console.log(EVM.execute(callDeploy, DEBUG_ALL));
 console.log(EVM.execute(otherDeploy, DEBUG_ALL));
-console.log(EVM.execute(callTx, DEBUG_ALL));
+// console.log(EVM.execute(callTx, DEBUG_ALL));
+console.log(EVM.execute(callTx, DEBUG_ALL, 265));
+console.log(EVM.step(DEBUG_ALL));
+console.log(EVM.step(DEBUG_ALL));
+console.log(EVM.step(DEBUG_ALL));
+console.log(EVM.forward(DEBUG_ALL));
+// console.log();
 console.log(EVM.execute(getTx, DEBUG_ALL));
 
 
