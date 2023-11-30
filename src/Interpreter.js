@@ -223,7 +223,9 @@ export class Interpreter {
             to: this.context.to,
             data: bytesToHex(calldata),
             value: value,
-            codebyte: this.context.evm.state[address].code
+            codebyte: this.context.evm.state[address].code,
+            evm: this.context.evm,
+            isDelegateCall: true
         }
 
         this._call(tx);
@@ -288,9 +290,9 @@ export class Interpreter {
                 const opCode = this.context.codebyte[pc];
                 this.context.opCode = opCode;
 
-                // console.log(pc, " : ", opcodes[opCode]);
+                console.log(pc, " : ", opcodes[opCode]);
 
-                // console.log(this.context.stack._store);
+                console.log(this.context.stack._store);
 
                 let opFunc;
                 // 如果为PUSH指令

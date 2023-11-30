@@ -78,7 +78,7 @@ const EVM = {
             this.currentInterpreter.context.opCode = opCode;
 
             // console.log(pc, " : ", opcodes[opCode]);
-            // console.log(this.context.stack._store);
+            // console.log(this.currentInterpreter.context.stack._store);
 
             let opFunc;
             // 如果为PUSH指令
@@ -133,7 +133,9 @@ const EVM = {
     execute: function (transaction, debug = DEBUG_OFF, breakpoint = -1) {
         // this.status = "running";
 
-        transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
+        if (!transaction.isDelegateCall) {
+            transaction.codebyte = transaction.to == null ? hexToBytes(transaction.data) : this.state[transaction.to].code;
+        }
 
         let interpreter;
         if (transaction.to === null) {
@@ -623,7 +625,7 @@ var getBSenderTx = {
 }
 
 var getCNumTx = {
-    nonce: 10002,
+    nonce: 10005,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0x23983b78d50a8e652cd0ff1e109ef39ff6596111",
     data: "0x4e70b1dc",
@@ -631,7 +633,7 @@ var getCNumTx = {
 }
 
 var getCSenderTx = {
-    nonce: 10002,
+    nonce: 10006,
     from: "0x5Bc4d6760C24Eb7939d3D28A380ADd2EAfFc55d5",
     to: "0x23983b78d50a8e652cd0ff1e109ef39ff6596111",
     data: "0x67e404ce",

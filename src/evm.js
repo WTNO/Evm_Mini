@@ -437,7 +437,7 @@ contract B {
         );
     }
 }
-
+*/
 
 var BDeploy = {
     nonce: 10000,
@@ -502,7 +502,7 @@ EVM.run(getBNumTx);
 EVM.run(getBSenderTx);
 EVM.run(getCNumTx);
 EVM.run(getCSenderTx);
-*/
+
 
 /**
 // SPDX-License-Identifier: MIT
