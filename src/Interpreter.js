@@ -270,7 +270,10 @@ export class Interpreter {
         // let interpreter = new Interpreter(tx, this.context.evm);
         // const returnData = interpreter.run();
 
+        // 保存当前上下文
+        const tempInterpreter = this.context.evm.currentInterpreter;
         const result = this.context.evm.execute(tx);
+        this.context.evm.currentInterpreter = tempInterpreter;
         result.isCall = true;
         console.log(result);
 

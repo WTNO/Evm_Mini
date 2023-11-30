@@ -30,6 +30,8 @@ const EVM = {
         const opCode = this.currentInterpreter.context.codebyte[pc];
         this.currentInterpreter.context.opCode = opCode;
 
+        console.log(pc, " : ", opcodes[opCode]);
+
         let opFunc;
         // 如果为PUSH指令
         if (opCode >= 0x60 && opCode <= 0x7f) {
@@ -528,12 +530,17 @@ console.log(EVM.execute(callDeploy, DEBUG_ALL));
 console.log(EVM.execute(otherDeploy, DEBUG_ALL));
 // console.log(EVM.execute(callTx, DEBUG_ALL));
 console.log(EVM.execute(callTx, DEBUG_ALL, 265));
-console.log(EVM.step(DEBUG_ALL));
-console.log(EVM.step(DEBUG_ALL));
-console.log(EVM.step(DEBUG_ALL));
-console.log(EVM.forward(DEBUG_ALL));
+console.log(EVM.step(DEBUG_OFF));
+console.log(EVM.step(DEBUG_OFF));
+console.log(EVM.step(DEBUG_OFF));
+console.log(EVM.forward(DEBUG_OFF));
 // console.log();
-console.log(EVM.execute(getTx, DEBUG_ALL));
+console.log(EVM.execute(getTx, DEBUG_ALL, 142));
+console.log(EVM.step(DEBUG_OFF));
+console.log(EVM.step(DEBUG_OFF));
+console.log(EVM.step(DEBUG_OFF));
+console.log(EVM.forward(DEBUG_OFF));
+console.log();
 
 
 /**
