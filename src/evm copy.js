@@ -495,6 +495,7 @@ contract OtherContract {
         x = _x;
     }
 }
+*/
 
 
 var callDeploy = {
@@ -531,20 +532,9 @@ var getTx = {
 
 console.log(EVM.execute(callDeploy, DEBUG_ALL));
 console.log(EVM.execute(otherDeploy, DEBUG_ALL));
-// console.log(EVM.execute(callTx, DEBUG_ALL));
-console.log(EVM.execute(callTx, DEBUG_ALL, 265));
-console.log(EVM.step(DEBUG_OFF));
-console.log(EVM.step(DEBUG_OFF));
-console.log(EVM.step(DEBUG_OFF));
-console.log(EVM.forward(DEBUG_OFF));
-// console.log();
-console.log(EVM.execute(getTx, DEBUG_ALL, 142));
-console.log(EVM.step(DEBUG_OFF));
-console.log(EVM.step(DEBUG_OFF));
-console.log(EVM.step(DEBUG_OFF));
-console.log(EVM.forward(DEBUG_OFF));
+console.log(EVM.execute(callTx, DEBUG_ALL));
+console.log(EVM.execute(getTx, DEBUG_ALL));
 console.log();
-*/
 
 /**
 // SPDX-License-Identifier: MIT
@@ -644,10 +634,10 @@ var getCSenderTx = {
 console.log(EVM.execute(BDeploy));
 console.log(EVM.execute(CDeploy));
 console.log(EVM.execute(delegatecallTx));
-console.log(EVM.execute(getBNumTx));
-console.log(EVM.execute(getBSenderTx));
-console.log(EVM.execute(getCNumTx));
-console.log(EVM.execute(getCSenderTx));
+console.log(bytesToHex(EVM.execute(getBNumTx).data));
+console.log(bytesToHex(EVM.execute(getBSenderTx).data));
+console.log(bytesToHex(EVM.execute(getCNumTx).data));
+console.log(bytesToHex(EVM.execute(getCSenderTx).data));
 console.log();
 */
 
@@ -774,7 +764,6 @@ contract PairFactory2 {
         getPair[tokenB][tokenA] = pairAddr;
     }
 }
-*/
 
 
 var factoryDeploy = {
@@ -824,6 +813,7 @@ console.log(EVM.execute(createPair2Tx));
 console.log(bytesToHex(EVM.execute(getPairTx).data));
 console.log(bytesToHex(EVM.execute(getToken0Tx).data));
 console.log(bytesToHex(EVM.execute(getToken1Tx).data));
+*/
 
 /**
 // SPDX-License-Identifier: MIT
@@ -878,7 +868,7 @@ var callTx = {
     value: 0n
 }
 
-EVM.run(callDeploy);
-EVM.run(otherDeploy);
-EVM.run(callTx);
+EVM.execute(callDeploy);
+EVM.execute(otherDeploy);
+EVM.execute(callTx);
 */
